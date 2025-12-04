@@ -1,5 +1,4 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 use crate::components::global::read::{StageBuffer, SyncStrategy};
 use crate::components::global::{GlobalConfig, GlobalReaderConfig, LoadingSides};

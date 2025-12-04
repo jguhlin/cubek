@@ -11,9 +11,9 @@ use crate::components::{
     resource::ComputeResources,
     tile::register::reader::{RegisterFragmentReader, RegisterStageReader},
 };
-use cubecl_core::ir::{ElemType, FloatKind};
-use cubecl_core::prelude::*;
-use cubecl_runtime::TypeUsage;
+use cubecl::features::TypeUsage;
+use cubecl::ir::{ElemType, FloatKind};
+use cubecl::prelude::*;
 
 impl<AccTile: TileKind> TileMatmulFamily for RegisterMatmul<AccTile>
 where

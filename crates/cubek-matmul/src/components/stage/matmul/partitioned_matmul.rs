@@ -15,8 +15,7 @@ use crate::components::{MatrixPrecision, stage::Stage};
 use crate::components::{global::WriteEventListener, stage::StageMatmul};
 use core::marker::PhantomData;
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_std::tensor::layout::Coords2d;
+use cubecl::std::tensor::layout::Coords2d;
 
 #[cube]
 /// Defines how the stage is partitioned among compute primitives (e.g., units or planes).

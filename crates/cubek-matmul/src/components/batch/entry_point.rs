@@ -4,8 +4,7 @@ use crate::components::{
     batch::{BatchConfig, BatchMatmulFamily},
     global::args::MatmulArgs,
 };
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 type Input<Args, Lhs, Rhs, AccG> = <Args as MatmulArgs>::Input<Lhs, Rhs, AccG>;
 type Output<Args, AccG> = <Args as MatmulArgs>::Output<AccG>;

@@ -11,9 +11,9 @@ use crate::components::{
 use crate::components::{AccS, LhsG, LhsS, MatrixPrecision, RhsG, RhsS, global};
 use crate::components::{MatmulPrecision, stage};
 
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl, prelude::barrier::Barrier};
-use cubecl_std::{
+use cubecl::prelude::barrier::Barrier;
+use cubecl::prelude::*;
+use cubecl::std::{
     CubeOption, CubeOptionExpand,
     tensor::{View, layout::Coords2d},
 };

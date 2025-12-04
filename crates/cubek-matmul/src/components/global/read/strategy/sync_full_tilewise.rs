@@ -10,9 +10,8 @@ use crate::components::{FormattedConfigError, InvalidConfigError};
 use crate::components::{MatmulElems, MatmulProblem};
 use crate::components::{global::memory::GlobalIterator, stage::ContiguousTilingLayout};
 use crate::components::{global::multi_stage::LoadMaxRoundPlaneCount, stage::TilingValidation};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::{tensor::layout::Coords2d, type_size};
+use cubecl::prelude::*;
+use cubecl::std::{tensor::layout::Coords2d, type_size};
 
 use super::{LoadingJob, LoadingValidation};
 

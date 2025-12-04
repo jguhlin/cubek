@@ -13,9 +13,8 @@ use crate::components::{
 };
 use crate::components::{AccS, LhsG, LhsS, MatrixPrecision, RhsG, RhsS};
 use crate::components::{MatmulPrecision, stage};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::{
+use cubecl::prelude::*;
+use cubecl::std::{
     CubeOption, CubeOptionExpand,
     tensor::{View, layout::Coords2d},
 };

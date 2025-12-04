@@ -7,9 +7,8 @@ use crate::components::stage::StridedStageFamily;
 use crate::components::stage::{StridedStageMemory, StridedTilingLayout};
 use crate::components::{InvalidConfigError, MatmulProblem};
 use crate::components::{global::memory::GlobalIterator, stage::TilingValidation};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::type_size;
+use cubecl::prelude::*;
+use cubecl::std::type_size;
 
 use super::{LoadingJob, LoadingValidation};
 

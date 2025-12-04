@@ -25,7 +25,7 @@ use crate::components::{
 use crate::components::{error::MatmulSetupError, stage::StridedStageFamily};
 use crate::components::{global::GlobalMatmulFamily, stage::FilledStageFamily};
 use crate::components::{global::MaxGlobalReaderPlanes, stage::NoTilingLayout};
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 use std::marker::PhantomData;
 
 /// Ordered double buffering matmul family for any precision

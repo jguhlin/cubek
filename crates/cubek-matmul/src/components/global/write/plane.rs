@@ -8,10 +8,9 @@ use crate::components::{
     stage::{PlanePartitioner, StageMemoryConfig, StagePartitioner},
     tile::StridedTile,
 };
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::tensor::View;
-use cubecl_std::tensor::layout::Coords2d;
+use cubecl::prelude::*;
+use cubecl::std::tensor::View;
+use cubecl::std::tensor::layout::Coords2d;
 
 #[derive(CubeType)]
 /// Writes tiles from out shared memory to output global memory

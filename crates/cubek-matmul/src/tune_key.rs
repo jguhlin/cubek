@@ -1,12 +1,9 @@
+use cubecl::{AutotuneKey, Runtime};
+use cubecl::{client::ComputeClient, ir::StorageType};
+use serde::{Deserialize, Serialize};
 use std::ops::Deref;
 
-use cubecl_core::{self as cubecl, Runtime};
-use cubecl_core::{client::ComputeClient, ir::StorageType};
-
-use cubecl_core::AutotuneKey;
-use serde::{Deserialize, Serialize};
-
-use cubecl_std::tensor::{MatrixBatchLayout, matrix_batch_layout};
+use cubecl::std::tensor::{MatrixBatchLayout, matrix_batch_layout};
 
 use super::components::{MatmulKind, MatmulProblemSize};
 

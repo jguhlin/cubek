@@ -5,8 +5,7 @@ use crate::components::{
     error::MatmulSetupError,
     global::{GlobalConfig, args::MatmulArgs},
 };
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 use std::{fmt::Debug, hash::Hash};
 
 /// A family of [matmuls](BatchMatmul) working with any [precision](MatmulPrecision).

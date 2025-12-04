@@ -14,9 +14,8 @@ use crate::components::global::read::TaskCounter;
 use crate::components::stage::StridedStageFamily;
 use crate::components::stage::StridedStageMemory;
 use crate::components::stage::TilingLayout;
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::{
+use cubecl::prelude::*;
+use cubecl::std::{
     CubeOption, CubeOptionExpand,
     tensor::{View, layout::Coords2d},
 };

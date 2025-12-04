@@ -1,4 +1,4 @@
-use cubecl_core::ir::MatrixIdent;
+use cubecl::ir::MatrixIdent;
 
 use crate::components::tile::{SharedTileConfig, TileConfig};
 

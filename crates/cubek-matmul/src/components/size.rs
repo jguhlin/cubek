@@ -1,5 +1,4 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 #[derive(Debug, Clone, Copy)]
 /// Matrix dimension specifier for matmul operations.

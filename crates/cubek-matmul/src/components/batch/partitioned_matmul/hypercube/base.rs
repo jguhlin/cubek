@@ -1,4 +1,4 @@
-use cubecl_core::CubeCount;
+use cubecl::CubeCount;
 
 use crate::components::{
     MatmulProblem, MatmulSetupError, TilingScheme,

@@ -1,8 +1,8 @@
 use std::marker::PhantomData;
 
-use cubecl_core::Runtime;
-use cubecl_core::client::ComputeClient;
-use cubecl_runtime::MmaConfig;
+use cubecl::Runtime;
+use cubecl::client::ComputeClient;
+use cubecl::features::MmaConfig;
 
 use crate::components::{MatmulProblem, MultiRowStrategy, SwizzleConfig, tile};
 use crate::components::{

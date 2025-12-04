@@ -1,6 +1,5 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::{CubeOption, CubeOptionExpand, tensor::layout::Coords2d};
+use cubecl::prelude::*;
+use cubecl::std::{CubeOption, CubeOptionExpand, tensor::layout::Coords2d};
 
 use crate::components::global::{MaxGlobalReaderPlanes, PlaneRoleConfig};
 use crate::components::stage::StageMemoryConfig;

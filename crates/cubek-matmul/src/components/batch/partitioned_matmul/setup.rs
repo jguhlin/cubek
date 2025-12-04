@@ -10,7 +10,7 @@ use crate::components::{
     InputRuntimeArg, MatmulElems, MatmulPrecision, MatmulProblem, MatmulSelection, OutputRuntimeArg,
 };
 use crate::components::{MatmulLineSizes, MatmulSetupError};
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 /// Simple partitioned batch matmul family for any precision
 pub struct PartitionedBatchMatmulFamily<GMM: GlobalMatmulFamily, S: GlobalPartitionMatmul> {

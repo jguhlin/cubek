@@ -1,8 +1,8 @@
 use std::marker::PhantomData;
 
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl, cmma::MmaDefinition, ir::MatrixIdent};
-use cubecl_std::{CubeOption, CubeOptionExpand};
+use cubecl::std::{CubeOption, CubeOptionExpand};
+use cubecl::{cmma::MmaDefinition, ir::MatrixIdent};
 
 use crate::components::{
     MatrixLayout, as_cmma_layout, from_cmma_layout,

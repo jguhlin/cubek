@@ -1,7 +1,6 @@
 use crate::components::{AccS, stage::Stage, tile::TileMatmul};
 use crate::components::{MatmulPrecision, MatrixLayout, MatrixPrecision, PartitionSize};
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl};
 
 #[derive(CubeType)]
 /// Wrapper over a sequence of Tile Matmul accumulators

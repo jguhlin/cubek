@@ -19,8 +19,8 @@ use crate::{
     components::tile::mma::config::{LoadMethod, MmaMatmulConfig},
     tune_key::MatmulElemType,
 };
-use cubecl_core::{ir::StorageType, prelude::*};
-use cubecl_runtime::MmaConfig;
+use cubecl::features::MmaConfig;
+use cubecl::{ir::StorageType, prelude::*};
 
 impl<LhsTile: TileKind, RhsTile: TileKind, AccTile: TileKind> TileMatmulFamily
     for MmaMatmul<LhsTile, RhsTile, AccTile>

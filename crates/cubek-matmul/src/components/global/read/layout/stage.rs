@@ -1,6 +1,5 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_std::tensor::layout::{Coords1d, Coords2d, Layout, LayoutExpand};
+use cubecl::std::tensor::layout::{Coords1d, Coords2d, Layout, LayoutExpand};
 
 use crate::components::{MatrixLayout, stage::StageMemoryConfig};
 

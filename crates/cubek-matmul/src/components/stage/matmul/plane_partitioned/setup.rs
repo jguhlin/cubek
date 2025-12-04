@@ -30,7 +30,6 @@ use crate::components::tile::io::Strided;
 use crate::components::{MatrixPrecision, global::PartitionedStage};
 use core::marker::PhantomData;
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
 /// Plane Matmul family for any precision
 pub struct PlaneMatmulFamily<

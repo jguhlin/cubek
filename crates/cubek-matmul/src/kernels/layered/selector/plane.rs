@@ -1,5 +1,5 @@
-use cubecl_core::{Runtime, client::ComputeClient, ir::StorageType};
-use cubecl_runtime::MmaConfig;
+use cubecl::features::MmaConfig;
+use cubecl::{Runtime, client::ComputeClient, ir::StorageType};
 
 use crate::components::{
     MatmulAvailabilityError, MatmulElems, MatmulSelection, MatmulSetupError, MultiRowStrategy,

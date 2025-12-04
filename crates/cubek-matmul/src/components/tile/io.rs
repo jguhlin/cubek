@@ -1,7 +1,6 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
-use cubecl_std::CubeOption;
+use cubecl::std::CubeOption;
 
 use crate::components::tile::StridedTile;
 

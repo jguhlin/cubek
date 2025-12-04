@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 
-use cubecl_core::Runtime;
-use cubecl_core::client::ComputeClient;
+use cubecl::Runtime;
+use cubecl::client::ComputeClient;
 
 use crate::components::stage::{PlaneMatmulFamily, RowMajorTilingOrder};
 use crate::components::{

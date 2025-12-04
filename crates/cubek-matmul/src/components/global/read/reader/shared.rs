@@ -1,5 +1,4 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::CubeType;
+use cubecl::prelude::CubeType;
 
 #[derive(Copy, Clone, CubeType)]
 /// Identifier for the stage in global double buffering

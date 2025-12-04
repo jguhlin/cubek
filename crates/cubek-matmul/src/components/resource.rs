@@ -1,4 +1,4 @@
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 use crate::components::InvalidConfigError;
 

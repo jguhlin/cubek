@@ -2,9 +2,9 @@
 //!
 //! Each local unit will compute a single element of the output matrix.
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl, tensor_line_size_parallel};
+use cubecl::tensor_line_size_parallel;
 
-use cubecl_std::tensor::{
+use cubecl::std::tensor::{
     MatrixBatchLayout, View, launch::ViewArg, layout::Coords3d, matrix_batch_layout,
 };
 

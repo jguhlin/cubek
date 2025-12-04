@@ -1,6 +1,5 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_std::tensor::layout::Coords2d;
+use cubecl::std::tensor::layout::Coords2d;
 
 use crate::components::{
     stage::{Stage, StageFamily, TilingLayout},

@@ -11,7 +11,7 @@ use crate::components::{
     },
     stage::{FilledStageFamily, NoTilingLayout, StageConfig, StridedStageFamily},
 };
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 use std::marker::PhantomData;
 
 use crate::components::{

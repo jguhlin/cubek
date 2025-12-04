@@ -1,5 +1,4 @@
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl};
+use cubecl::prelude::*;
 
 use crate::components::global::memory::GlobalMemoryConfig;
 use crate::components::global::multi_stage::EventLoadingMode;
@@ -13,7 +12,7 @@ use crate::components::{AccG, error::MatmulSetupError};
 use crate::components::{AvailableLineSizes, MatmulPrecision, MatmulProblem};
 use crate::components::{LhsG, MatmulElems, MatmulLineSizes, MatmulSelection, RhsG};
 use crate::components::{MatmulIdent, StageIdent, problem};
-use cubecl_std::{
+use cubecl::std::{
     CubeOption,
     tensor::{View, layout::Coords2d},
 };

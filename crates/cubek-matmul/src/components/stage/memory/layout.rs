@@ -1,8 +1,7 @@
 use std::marker::PhantomData;
 
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl};
-use cubecl_std::tensor::layout::Coords2d;
+use cubecl::prelude::*;
+use cubecl::std::tensor::layout::Coords2d;
 
 use crate::components::tile::StridedTile;
 use crate::components::{InvalidConfigError, stage::StageMemoryConfig};

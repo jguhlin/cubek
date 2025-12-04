@@ -10,8 +10,8 @@ use crate::components::{
 use crate::kernels::layered::base::Selection;
 use crate::kernels::layered::{Algorithm, launch_with_config};
 use crate::{MatmulInputHandleRef, components::tile::TileMatmulFamily};
-use cubecl_core::prelude::TensorHandleRef;
-use cubecl_core::{Runtime, client::ComputeClient};
+use cubecl::prelude::TensorHandleRef;
+use cubecl::{Runtime, client::ComputeClient};
 
 /// Select which kernel to launch for the given Algorithm.
 ///

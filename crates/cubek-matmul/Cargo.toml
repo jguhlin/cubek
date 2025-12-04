@@ -5,15 +5,15 @@ description = "CubeCL Matrix Multiplication Kernels Engine"
 edition.workspace = true
 keywords = []
 license.workspace = true
-name = "cubecl-matmul"
+name = "cubek-matmul"
 readme.workspace = true
-repository = "https://github.com/tracel-ai/cubecl/tree/main/crates/cubecl-matmul"
+repository = "https://github.com/tracel-ai/cubek/tree/main/crates/cubek-matmul"
 version.workspace = true
 
 [features]
-default = ["std", "cubecl-runtime/default", "cubecl-core/default"]
+default = ["std", "cubecl/default"]
 export_tests = ["pretty_assertions"]
-std = ["cubecl-runtime/std", "cubecl-core/std"]
+std = ["cubecl/std"]
 
 matmul_tests_mma = []
 matmul_tests_plane = []
@@ -78,13 +78,12 @@ matmul_tests_all = [
 ]
 
 [dependencies]
+cubek-random = { path = "../cubek-random", version = "=0.0.1", default-features = false }
+cubek-reduce = { path = "../cubek-reduce", version = "=0.0.1", default-features = false }
+
 bytemuck = { workspace = true }
-cubecl-common = { path = "../cubecl-common", version = "=0.9.0-pre.4", default-features = false }
-cubecl-core = { path = "../cubecl-core", version = "=0.9.0-pre.4", default-features = false }
-cubecl-random = { path = "../cubecl-random", version = "=0.9.0-pre.4", default-features = false }
-cubecl-reduce = { path = "../cubecl-reduce", version = "=0.9.0-pre.4", default-features = false }
-cubecl-runtime = { path = "../cubecl-runtime", version = "=0.9.0-pre.4", default-features = false }
-cubecl-std = { path = "../cubecl-std", version = "=0.9.0-pre.4", default-features = false }
+cubecl = { workspace = true }
+cubecl-common = { workspace = true }
 half = { workspace = true, features = ["bytemuck"] }
 pretty_assertions = { workspace = true, optional = true }
 serde = { workspace = true }

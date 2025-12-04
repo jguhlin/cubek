@@ -1,6 +1,5 @@
-use cubecl_core::{self as cubecl};
-use cubecl_core::{ir::StorageType, prelude::*};
-use cubecl_runtime::MmaConfig;
+use cubecl::features::MmaConfig;
+use cubecl::{ir::StorageType, prelude::*};
 
 use crate::components::error::MatmulSetupError;
 use crate::components::tile::TileConfig;

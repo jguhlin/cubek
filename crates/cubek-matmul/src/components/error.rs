@@ -1,4 +1,4 @@
-use cubecl_core::{CubeCount, CubeDim, LineSizeError, ir::StorageType, server::LaunchError};
+use cubecl::{CubeCount, CubeDim, LineSizeError, ir::StorageType, server::LaunchError};
 use std::fmt::{Debug, Display};
 
 use crate::components::{MatrixLayout, TileSize};

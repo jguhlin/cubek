@@ -1,5 +1,4 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
 use crate::components::{as_cmma_layout, tile::StridedTile};
 

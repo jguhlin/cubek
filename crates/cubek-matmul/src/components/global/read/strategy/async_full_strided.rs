@@ -10,9 +10,9 @@ use crate::components::{
     global::read::{FullLoadingStrategy, stage::FullStageLayout, validate_async_barrier},
 };
 use crate::components::{global::memory::GlobalIterator, stage::TilingValidation};
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl, prelude::barrier::Barrier};
-use cubecl_std::tensor::layout::{Layout, LayoutExpand};
+use cubecl::prelude::barrier::Barrier;
+use cubecl::prelude::*;
+use cubecl::std::tensor::layout::{Layout, LayoutExpand};
 
 use super::{LoadingJob, LoadingValidation};
 

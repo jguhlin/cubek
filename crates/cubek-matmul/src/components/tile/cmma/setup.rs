@@ -11,8 +11,8 @@ use crate::components::{
 };
 use crate::components::{error::MatmulSetupError, tile::io::Strided};
 use crate::components::{resource::ComputeResources, tile::io::TileKind};
-use cubecl_core::{ir::StorageType, prelude::*};
-use cubecl_runtime::MmaConfig;
+use cubecl::features::MmaConfig;
+use cubecl::{ir::StorageType, prelude::*};
 
 impl<Tile: TileKind> TileMatmulFamily for CmmaMatmul<Tile>
 where

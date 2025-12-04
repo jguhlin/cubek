@@ -10,7 +10,6 @@ use crate::components::{AccS, stage::StageEvent};
 use crate::components::{LhsS, MatmulPrecision, PartitionSize, RhsS, StageSize};
 use crate::components::{MatrixPrecision, stage::Stage};
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub struct SharedPartitionMatmulConfig<TC: TileConfig> {

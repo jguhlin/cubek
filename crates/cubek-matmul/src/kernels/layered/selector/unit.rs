@@ -6,7 +6,7 @@ use crate::components::{
     batch::{CubeCountPlanSelection, GlobalOrderSelection, HypercubeSelection, SmAllocation},
     stage::{PartitionBuffering, SwizzleMode},
 };
-use cubecl_core::{Runtime, client::ComputeClient, ir::StorageType};
+use cubecl::{Runtime, client::ComputeClient, ir::StorageType};
 
 #[derive(Default, Clone, Copy, Debug)]
 pub enum TileSizeSelection {

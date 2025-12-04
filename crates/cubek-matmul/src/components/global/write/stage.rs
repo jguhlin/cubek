@@ -4,9 +4,8 @@ use crate::components::stage::{ContiguousTilingLayout, StageFamily};
 use crate::components::stage::{StageMemoryConfig, TilingLayout};
 use crate::components::tile::StridedTile;
 use crate::components::{stage::Stage, tile::io::Strided};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::tensor::layout::Coords2d;
+use cubecl::prelude::*;
+use cubecl::std::tensor::layout::Coords2d;
 
 pub type WriteTiling = ContiguousTilingLayout<RowMajorTilingOrder>;
 

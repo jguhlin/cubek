@@ -3,9 +3,8 @@ use crate::components::{
     global::{RoleRuleConfig, WriteEventListener, WriteTiling, memory::GlobalMemoryConfig},
     stage::{Stage, StageFamily, StageMemoryConfig},
 };
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::tensor::{View, layout::Coords2d};
+use cubecl::prelude::*;
+use cubecl::std::tensor::{View, layout::Coords2d};
 
 pub trait GlobalWriterFamily: 'static + Send + Sync {
     type Stage: StageFamily<ReadWrite>;

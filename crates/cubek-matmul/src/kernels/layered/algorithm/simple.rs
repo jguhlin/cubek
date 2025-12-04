@@ -1,5 +1,5 @@
-use cubecl_core::{Runtime, client::ComputeClient};
-use cubecl_runtime::MmaConfig;
+use cubecl::features::MmaConfig;
+use cubecl::{Runtime, client::ComputeClient};
 use std::marker::PhantomData;
 
 use crate::{

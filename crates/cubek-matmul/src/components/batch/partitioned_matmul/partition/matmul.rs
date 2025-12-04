@@ -1,5 +1,4 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 use crate::components::{
     AccG, LhsG, MatmulPrecision, RhsG,
@@ -7,7 +6,7 @@ use crate::components::{
     global::{self, GlobalConfig, args::MatmulArgs},
     stage::StageConfig,
 };
-use cubecl_std::{CubeOption, CubeOptionExpand};
+use cubecl::std::{CubeOption, CubeOptionExpand};
 
 #[derive(CubeType)]
 /// Area of a tensor a cube is responsible of performing matmul

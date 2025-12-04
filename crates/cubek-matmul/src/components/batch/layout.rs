@@ -1,6 +1,5 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_std::tensor::layout::*;
+use cubecl::std::tensor::layout::*;
 
 /// Slice the layout at a specific batch, and reduce its dimensionality
 /// Not general enough to be in cubecl-std

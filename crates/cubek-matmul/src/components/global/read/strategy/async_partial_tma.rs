@@ -23,8 +23,8 @@ use crate::components::{
     stage::{StageConfig, StridedStageFamily},
 };
 use crate::components::{global::memory::GlobalIterator, stage::TilingValidation};
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl, prelude::barrier::Barrier};
+use cubecl::prelude::barrier::Barrier;
+use cubecl::prelude::*;
 
 use super::{LoadingJob, LoadingValidation};
 

@@ -9,8 +9,7 @@ use crate::components::global::{GlobalConfig, GlobalWriter};
 use crate::components::global::{LoadingSides, read::SyncStrategy};
 use crate::components::stage::PartitionScheduler;
 use crate::components::{MatmulPrecision, stage};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 #[cube]
 /// Read the first stage for both Lhs and Rhs

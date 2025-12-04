@@ -11,8 +11,7 @@ use crate::components::{
     },
     stage::{StridedStageFamily, StridedStageMemory, StridedTilingLayout, TilingValidation},
 };
-use cubecl_core::prelude::{barrier::Barrier, *};
-use cubecl_core::{self as cubecl};
+use cubecl::prelude::{barrier::Barrier, *};
 
 use super::LoadingValidation;
 

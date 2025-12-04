@@ -1,12 +1,11 @@
 use cubecl::prelude::*;
-use cubecl_common::quant::scheme::{QuantLevel, QuantScheme};
-use cubecl_core::{self as cubecl};
-use cubecl_std::{
+use cubecl::std::{
     FastDivmod, FastDivmodArgs,
     tensor::layout::{
         Coords1d, Coords2d, Coords3d, Layout, LayoutExpand, VirtualLayout, VirtualLayoutLaunch,
     },
 };
+use cubecl_common::quant::scheme::{QuantLevel, QuantScheme};
 
 use crate::components::{MatmulProblem, MatrixLayout, global::memory::GlobalMemoryConfig};
 

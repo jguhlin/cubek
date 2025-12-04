@@ -1,5 +1,5 @@
+use cubecl::prelude::barrier::Barrier;
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl, prelude::barrier::Barrier};
 
 use crate::components::{
     MatmulPrecision,

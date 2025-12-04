@@ -7,8 +7,7 @@ use crate::components::stage::OrderedTilingOrder;
 use crate::components::{FormattedConfigError, InvalidConfigError, StageIdent};
 use crate::components::{MatmulElems, MatmulProblem};
 use crate::components::{global::RoleRule, stage::TilingValidation};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 use super::{LoadingValidation, sync_full_tilewise};
 

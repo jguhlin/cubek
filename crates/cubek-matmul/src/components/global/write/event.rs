@@ -1,6 +1,5 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::tensor::layout::Coords2d;
+use cubecl::prelude::*;
+use cubecl::std::tensor::layout::Coords2d;
 
 #[derive(CubeType, Debug, Clone, Copy, PartialEq, Eq)]
 /// Events that occur during the process of storing tiles to

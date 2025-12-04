@@ -1,6 +1,6 @@
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl, intrinsic};
-use cubecl_std::{Swizzle, type_size};
+use cubecl::intrinsic;
+use cubecl::prelude::*;
+use cubecl::std::{Swizzle, type_size};
 
 use crate::components::{
     MatrixLayout,

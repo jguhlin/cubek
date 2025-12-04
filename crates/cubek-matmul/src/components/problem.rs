@@ -1,5 +1,4 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use super::{MatmulIdent, MatmulProblemSize};

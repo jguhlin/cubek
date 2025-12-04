@@ -1,15 +1,15 @@
 use std::fmt::Display;
 
-use cubecl_common::quant::scheme::{QuantScheme, QuantStore, QuantValue};
-use cubecl_core::{
+use cubecl::{
     Runtime,
     client::ComputeClient,
     ir::StorageType,
     prelude::{CubePrimitive, TensorHandleRef},
     server::LaunchError,
 };
+use cubecl_common::quant::scheme::{QuantScheme, QuantStore, QuantValue};
 
-use cubecl_std::tensor::{TensorHandle, into_contiguous_packed, into_contiguous_pitched};
+use cubecl::std::tensor::{TensorHandle, into_contiguous_packed, into_contiguous_pitched};
 use serde::{Deserialize, Serialize};
 
 use crate::{

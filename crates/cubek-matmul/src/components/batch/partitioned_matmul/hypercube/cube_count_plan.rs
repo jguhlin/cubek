@@ -1,5 +1,4 @@
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 use crate::components::MatmulProblem;
 use crate::components::batch::partitioned_matmul::hypercube::global_order::{GlobalOrder, swizzle};

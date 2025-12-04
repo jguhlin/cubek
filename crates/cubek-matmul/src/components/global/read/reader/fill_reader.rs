@@ -1,7 +1,6 @@
 use std::marker::PhantomData;
 
-use cubecl_core as cubecl;
-use cubecl_core::{CubeType, prelude::*};
+use cubecl::{CubeType, prelude::*};
 
 use crate::components::{MatrixPrecision, stage::FilledStage};
 

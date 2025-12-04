@@ -1,5 +1,5 @@
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl, cmma::MmaDefinition, ir::MatrixIdent};
+use cubecl::{cmma::MmaDefinition, ir::MatrixIdent};
 
 use crate::components::{
     MatrixLayout, as_cmma_layout,

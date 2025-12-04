@@ -1,6 +1,5 @@
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl, server::TensorMapMeta, unexpanded};
-use cubecl_std::{
+use cubecl::std::{
     CubeOption, CubeOptionArgs, CubeOptionExpand,
     tensor::{
         View,
@@ -8,6 +7,7 @@ use cubecl_std::{
         layout::{Coords1d, Coords3d, VirtualLayout, VirtualLayoutLaunch},
     },
 };
+use cubecl::{server::TensorMapMeta, unexpanded};
 
 use crate::{
     MatmulInputHandleRef,

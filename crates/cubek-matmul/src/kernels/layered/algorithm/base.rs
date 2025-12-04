@@ -6,7 +6,7 @@ use crate::components::{
     AvailableLineSizes, MatmulElems, MatmulLineSizes, MatmulProblem, MatmulSelection,
     MatmulSetupError,
 };
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 /// Specifications for a matmul algorithm
 pub trait Algorithm {

@@ -1,8 +1,5 @@
+use cubecl::prelude::barrier::{Barrier, BarrierToken};
 use cubecl::prelude::*;
-use cubecl_core::{
-    self as cubecl,
-    prelude::barrier::{Barrier, BarrierToken},
-};
 
 use crate::components::{
     LhsS, MatmulPrecision, RhsS,

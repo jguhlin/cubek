@@ -1,4 +1,4 @@
-use cubecl_core::{Runtime, client::ComputeClient, flex32, prelude::CubePrimitive, tf32};
+use cubecl::{Runtime, client::ComputeClient, flex32, prelude::CubePrimitive, tf32};
 
 use crate::components::{
     MatmulElems, TilingScheme,

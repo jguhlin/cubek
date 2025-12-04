@@ -10,10 +10,10 @@ use crate::components::{
 };
 use crate::kernels::layered::selector::launch_kernel_concrete;
 use crate::{MatmulInputHandle, MatmulInputHandleRef};
-use cubecl_core::prelude::*;
-use cubecl_core::{Runtime, client::ComputeClient, frontend::TensorHandleRef};
-use cubecl_runtime::TypeUsage;
-use cubecl_std::tensor::{MatrixBatchLayout, TensorHandle, matrix_batch_layout};
+use cubecl::features::TypeUsage;
+use cubecl::prelude::*;
+use cubecl::std::tensor::{MatrixBatchLayout, TensorHandle, matrix_batch_layout};
+use cubecl::{Runtime, client::ComputeClient, frontend::TensorHandleRef};
 
 use super::Algorithm;
 

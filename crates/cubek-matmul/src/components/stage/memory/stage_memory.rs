@@ -1,3 +1,4 @@
+use cubecl::prelude::*;
 use std::marker::PhantomData;
 
 use crate::components::global::GlobalReaderConfig;
@@ -7,9 +8,8 @@ use crate::components::stage::{LoadStageFamily, StageMemoryConfig, TilingLayout}
 use crate::components::tile::StridedTile;
 use crate::components::{global::read::StageBuffer, stage::StageFamily};
 use crate::components::{stage::Stage, tile::io::Strided};
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::{Swizzle, tensor::layout::Coords2d, type_size};
+use cubecl::prelude::*;
+use cubecl::std::{Swizzle, tensor::layout::Coords2d, type_size};
 
 pub struct StridedStageFamily;
 

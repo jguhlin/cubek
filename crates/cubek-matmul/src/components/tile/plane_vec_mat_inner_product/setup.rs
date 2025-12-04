@@ -11,9 +11,9 @@ use crate::components::{
     resource::ComputeResources,
     tile::plane_vec_mat_inner_product::reader::{MatrixFragmentReader, MatrixStageReader},
 };
-use cubecl_core::ir::{ElemType, FloatKind};
-use cubecl_core::prelude::*;
-use cubecl_runtime::{Plane, TypeUsage};
+use cubecl::features::{Plane, TypeUsage};
+use cubecl::ir::{ElemType, FloatKind};
+use cubecl::prelude::*;
 
 impl<Kind: TileKind> TileMatmulFamily for PlaneVecMatInnerProduct<Kind>
 where

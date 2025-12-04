@@ -17,10 +17,9 @@ use crate::components::{
     },
     stage::{FilledStage, StridedStageMemory},
 };
-use cubecl_core as cubecl;
-use cubecl_core::prelude::*;
-use cubecl_std::tensor::{View, layout::Coords2d};
-use cubecl_std::{CubeOption, CubeOptionExpand};
+use cubecl::prelude::*;
+use cubecl::std::tensor::{View, layout::Coords2d};
+use cubecl::std::{CubeOption, CubeOptionExpand};
 use std::marker::PhantomData;
 
 /// Performs matrix multiplication at the global level.

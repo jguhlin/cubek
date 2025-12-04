@@ -1,9 +1,6 @@
+use cubecl::prelude::barrier::{copy_async, copy_async_checked};
 use cubecl::prelude::*;
-use cubecl_core::{
-    self as cubecl,
-    prelude::barrier::{copy_async, copy_async_checked},
-};
-use cubecl_std::{
+use cubecl::std::{
     tensor::{View, layout::Coords2d},
     type_size,
 };

@@ -28,7 +28,6 @@ use crate::components::{LhsS, global::PartitionedStageFamily};
 use crate::components::{MatmulLineSizes, global::PartitionedStage};
 use core::marker::PhantomData;
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
 /// Unit Matmul family for any precision
 pub struct UnitMatmulFamily<TM: TileMatmulFamily, StageIn: StageFamily, StageAcc: StageFamily> {

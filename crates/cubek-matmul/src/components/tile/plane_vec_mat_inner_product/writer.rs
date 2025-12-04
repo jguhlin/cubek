@@ -1,5 +1,4 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
 use crate::components::tile::{StridedTile, plane_vec_mat_inner_product::LineContainer};
 

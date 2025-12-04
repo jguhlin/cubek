@@ -8,9 +8,8 @@ use crate::components::{MatmulPrecision, global::memory::GlobalIterator};
 use crate::components::{StageIdent, global::stride_align_bits};
 use crate::components::{global::GlobalReaderConfig, stage::StageConfig};
 use crate::components::{global::SharedGlobalMatmulConfig, stage::StageFamily};
-use cubecl_core::ir::{BarrierLevel, OpaqueType, SemanticType};
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl};
+use cubecl::ir::{BarrierLevel, OpaqueType, SemanticType};
+use cubecl::prelude::*;
 
 #[cube]
 /// A loading job represents a sequence of loading tasks.

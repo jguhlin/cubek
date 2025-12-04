@@ -1,3 +1,4 @@
+use cubecl::prelude::*;
 use std::marker::PhantomData;
 
 use crate::components::tile::plane_vec_mat_inner_product::config::PlaneVecMatInnerProductConfig;
@@ -14,8 +15,7 @@ use crate::components::{
         plane_vec_mat_inner_product::{reader::MatrixFragmentReader, writer::MatrixStageWriter},
     },
 };
-use cubecl_core::prelude::*;
-use cubecl_core::{self as cubecl};
+use cubecl::prelude::*;
 
 /// Uses one unit to perform a small matmul directly in registers
 pub struct PlaneVecMatInnerProduct<Acc: TileKind> {
