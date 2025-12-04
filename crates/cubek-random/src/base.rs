@@ -1,14 +1,12 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-
-use cubecl_common::{rand::get_seeded_rng, stub::Mutex};
-use cubecl_std::tensor::{
+use cubecl::std::tensor::{
     View,
     layout::{
         Coords1d,
         linear::{LinearView, linear_view},
     },
 };
+use cubecl_common::{rand::get_seeded_rng, stub::Mutex};
 use rand::{Rng, SeedableRng, rngs::StdRng};
 
 pub(crate) const N_VALUES_PER_THREAD: usize = 128;

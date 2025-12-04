@@ -1,5 +1,4 @@
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
 
 #[derive(Default, Copy, Clone, Debug)]
 pub struct BinStats {
