@@ -82,8 +82,10 @@ jobs:
     needs:
       - publish-cubek-random
       - publish-cubek-reduce
-      - publish-cubek-matmul
       - publish-cubek-quant
+      - publish-cubek-matmul
+      - publish-cubek-attention
+      - publish-cubek-convolution
     uses: tracel-ai/github-actions/.github/workflows/publish-crate.yml@v5
     with:
       crate: cubek
