@@ -1,7 +1,7 @@
 mod suite;
 
 pub mod tiling_scheme_ops {
-    use crate::components::{AttentionProblem, AttentionTilingScheme};
+    use cubek_attention::components::{AttentionProblem, AttentionTilingScheme};
 
     pub fn elements_in_stage_seq_q(tiling_scheme: &AttentionTilingScheme) -> usize {
         tiling_scheme.stage_size.seq_q as usize * elements_in_partition_seq_q(tiling_scheme)
@@ -57,9 +57,9 @@ macro_rules! testgen_attention {
 
         #[cfg(feature = "attention_tests_unit")]
         mod attention_unit {
-            type Algorithm = cubecl_attention::kernels::unit::UnitAlgorithm;
-            const TILE_SIZE: cubecl_attention::components::AttentionTileSize =
-                cubecl_attention::components::AttentionTileSize {
+            type Algorithm = cubek_attention::kernels::unit::UnitAlgorithm;
+            const TILE_SIZE: cubek_attention::components::AttentionTileSize =
+                cubek_attention::components::AttentionTileSize {
                     seq_q: 4,
                     seq_kv: 4,
                     head_dim: 4,
@@ -74,18 +74,18 @@ macro_rules! testgen_attention {
         #[cfg(feature = "attention_tests_blackbox_accelerated")]
         mod attention_blackbox_accelerated {
             type Algorithm =
-                cubecl_attention::kernels::blackbox_accelerated::BlackboxAcceleratedAlgorithm;
+                cubek_attention::kernels::blackbox_accelerated::BlackboxAcceleratedAlgorithm;
             #[cfg(target_os = "macos")]
-            const TILE_SIZE: cubecl_attention::components::AttentionTileSize =
-                cubecl_attention::components::AttentionTileSize {
+            const TILE_SIZE: cubek_attention::components::AttentionTileSize =
+                cubek_attention::components::AttentionTileSize {
                     seq_q: 8,
                     seq_kv: 8,
                     head_dim: 8,
                     val_dim: 8,
                 };
             #[cfg(not(target_os = "macos"))]
-            const TILE_SIZE: cubecl_attention::components::AttentionTileSize =
-                cubecl_attention::components::AttentionTileSize {
+            const TILE_SIZE: cubek_attention::components::AttentionTileSize =
+                cubek_attention::components::AttentionTileSize {
                     seq_q: 16,
                     seq_kv: 16,
                     head_dim: 16,
@@ -104,16 +104,18 @@ macro_rules! testgen_attention_precision {
     () => {
         use super::*;
 
-        use cubecl_attention::components::{
+        use cubek_attention::components::{
             AccumulatorPrecision, AttentionIdent, AttentionLineSizes, AttentionPartitionSize,
             AttentionProblem, AttentionStageSize, AttentionStorageTypes, AttentionTileSize,
             AttentionTilingScheme, AvailableLineSizes,
         };
-        use $crate::kernels::SharedAttentionSettings;
-        use $crate::tests::attention_test_launcher::attention_test_launch;
-        use $crate::tests::macros::tiling_scheme_ops::*;
+        use cubek_attention::kernels::SharedAttentionSettings;
+        use $crate::suite::TestPrecision;
+        use $crate::suite::attention_test_launcher::attention_test_launch;
+        use $crate::suite::macros::tiling_scheme_ops::*;
 
-        use $crate::tests::TestPrecision;
+        use cubecl::client::ComputeClient;
+        use cubecl::{Runtime, TestRuntime};
 
         #[cfg(feature = "attention_tests_f16")]
         mod f16_ty {
@@ -130,3 +132,5 @@ macro_rules! testgen_attention_precision {
         }
     };
 }
+
+testgen_attention!();

@@ -5,7 +5,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_tile_simple() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -56,7 +56,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_partition_several_planes() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -107,7 +107,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_problem_smaller_than_one_tile_seq_q_seq_kv_val_dim() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -158,7 +158,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_head_dim_oob() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -209,7 +209,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_two_rows_in_array_tile() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -261,7 +261,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_tile_seqq16() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -312,7 +312,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_tile_seqq4() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -363,7 +363,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_seqq2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 2,
@@ -414,7 +414,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_hd2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -465,7 +465,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_kv2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -516,7 +516,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_vd2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -567,7 +567,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_hd2_vd2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -618,7 +618,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_all2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 2,
@@ -669,7 +669,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_global_iterations_2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -720,7 +720,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_global_iterations_2_kv2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -771,7 +771,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_kv1_global1_with_oob() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -822,7 +822,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_seqq2_global2_kv2_global2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -873,7 +873,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_many_planes() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -924,7 +924,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_kv1_global3_with_oob() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -975,7 +975,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_oob_in_q() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 2,
@@ -1026,7 +1026,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_kv2_with_oob() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1077,7 +1077,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_kv2_causal() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1128,7 +1128,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_partition_kv2_masked() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1179,7 +1179,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_stage2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1230,7 +1230,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_stage4() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1281,7 +1281,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_stage2_problem4() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1332,7 +1332,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_reuse_key_value() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1384,7 +1384,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_double_row_wise() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1436,7 +1436,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_tile_masked() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1487,7 +1487,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_tile_causal() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1538,7 +1538,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_one_tile_masked_causal() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1589,7 +1589,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_masked_oob() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1640,7 +1640,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_masked_larger() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1691,7 +1691,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_num_heads_2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1742,7 +1742,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_batch_2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1793,7 +1793,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_batch_2_seqq2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 2,
@@ -1844,7 +1844,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_num_heads_2_batch_2() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1895,7 +1895,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_num_heads_2_masked() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let partition_size = AttentionPartitionSize {
                 seq_q: 1,
@@ -1946,7 +1946,7 @@ macro_rules! testgen_attention_suite {
 
         #[test]
         fn attention_huge_problem() {
-            let client = TestRuntime::client(&Default::default());
+            let client = <TestRuntime as Runtime>::client(&Default::default());
 
             let seq_q = 128;
             let seq_kv = 128;
