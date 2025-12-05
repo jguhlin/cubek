@@ -9,9 +9,9 @@ use crate::{
     kernels::layered::algorithm::Algorithm,
     tests::convolution_test_launcher::test_convolution_algorithm,
 };
-use cubecl_core::Runtime;
-use cubecl_matmul::components::{InputArg, OutputArg};
-use cubecl_matmul::components::{MatmulSelection, MatrixLayout};
+use cubecl::Runtime;
+use cubek_matmul::components::{InputArg, OutputArg};
+use cubek_matmul::components::{MatmulSelection, MatrixLayout};
 
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub struct ConvolutionSize {

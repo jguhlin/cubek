@@ -1,4 +1,4 @@
-use cubecl_matmul::components::{
+use cubek_matmul::components::{
     AvailableLineSizes, LoadingPrecomputeStrategy, MatmulElems, MatmulLineSizes, MatmulSelection,
     MatmulSetupError, MultiRowStrategy,
     global::{LoadSpecializationConfig, args::MatmulArgs, read::ReaderMode},
@@ -6,9 +6,9 @@ use cubecl_matmul::components::{
     tile::TileMatmulFamily,
 };
 
-use cubecl_std::tensor::TensorHandle;
+use cubecl::std::tensor::TensorHandle;
 
-use cubecl_core::prelude::*;
+use cubecl::prelude::*;
 
 use crate::components::{
     ConvolutionProblem,

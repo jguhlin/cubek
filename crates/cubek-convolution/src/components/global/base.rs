@@ -1,14 +1,14 @@
+use cubecl;
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_matmul::components::{
+use cubecl::std::{
+    CubeOption,
+    tensor::{View, layout::Coords2d},
+};
+use cubek_matmul::components::{
     AccG, AvailableLineSizes, LhsG, MatmulElems, MatmulLineSizes, MatmulPrecision, MatmulSelection,
     MatmulSetupError, RhsG,
     global::GlobalWriter,
     stage::{ContiguousTilingLayout, RowMajorTilingOrder},
-};
-use cubecl_std::{
-    CubeOption,
-    tensor::{View, layout::Coords2d},
 };
 
 use crate::components::{

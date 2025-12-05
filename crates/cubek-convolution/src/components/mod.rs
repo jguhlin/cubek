@@ -7,8 +7,8 @@ mod problem;
 mod selection;
 
 pub use config::*;
-use cubecl_matmul::components::tile::{cmma::CmmaMatmul, io::Strided};
-use cubecl_std::CubeOption;
+use cubecl::std::CubeOption;
+use cubek_matmul::components::tile::{cmma::CmmaMatmul, io::Strided};
 pub use error::*;
 pub use problem::*;
 pub use selection::*;

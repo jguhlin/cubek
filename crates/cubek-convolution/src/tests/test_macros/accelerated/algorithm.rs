@@ -8,12 +8,12 @@ macro_rules! testgen_convolution_accelerated_algorithm {
             async_full_cyclic,
             async_full_strided,
         };
-        use cubecl_matmul::components::global::read::{
+        use cubek_matmul::components::global::read::{
             sync_full_cyclic,
             sync_full_strided,
             sync_full_tilewise,
         };
-        use cubecl_matmul::components::stage::{
+        use cubek_matmul::components::stage::{
             ColMajorTilingOrder,
             RowMajorTilingOrder
         };

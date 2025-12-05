@@ -5,7 +5,7 @@ macro_rules! testgen_convolution_problem {
     ($algorithm: ty, $precision: ty, $selection_builder: expr) => {
         mod _problem_generated {
             use super::*;
-            use cubecl_matmul::components::MatmulSelection;
+            use cubek_matmul::components::MatmulSelection;
 
             pub fn get_selection() -> MatmulSelection {
                 $selection_builder.build()

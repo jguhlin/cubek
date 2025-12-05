@@ -3,6 +3,7 @@ use crate::components::{
     global::{args::RuntimeArgs, memory::Im2colTmaReader},
 };
 use cubecl::prelude::barrier::Barrier;
+use cubecl::prelude::*;
 use cubecl::std::FastDivmod;
 use cubek_matmul::components::stage::{
     ColMajorTilingOrder, ContiguousTilingLayout, StridedStageMemory,

@@ -1,12 +1,12 @@
 use std::fmt::Display;
 
-use cubecl_core::{
+use cubecl::{
     CubeElement, Runtime,
     client::ComputeClient,
     prelude::{Float, Numeric},
     server::{self},
 };
-use cubecl_matmul::tests::test_utils::{CastInto, Sample};
+use cubek_matmul::tests::test_utils::{CastInto, Sample};
 use cubecl_runtime::MmaConfig;
 
 use crate::components::ConvolutionProblem;

@@ -1,11 +1,11 @@
 use crate::components::ConvGemmConfig;
-use cubecl_core::prelude::*;
-use cubecl_core::{CubeElement, server::Allocation};
-use cubecl_matmul::components::{InputArg, MatmulSelection, OutputArg};
-use cubecl_matmul::components::{MatmulElems, MatmulIdent};
-use cubecl_matmul::tests::layered::matmul_test_launcher::TensorRawParts;
-use cubecl_matmul::tests::test_utils::Sample;
-use cubecl_matmul::{MatmulInputHandleRef, components::AvailableLineSizes};
+use cubecl::prelude::*;
+use cubecl::{CubeElement, server::Allocation};
+use cubek_matmul::components::{InputArg, MatmulSelection, OutputArg};
+use cubek_matmul::components::{MatmulElems, MatmulIdent};
+use cubek_matmul::tests::layered::matmul_test_launcher::TensorRawParts;
+use cubek_matmul::tests::test_utils::Sample;
+use cubek_matmul::{MatmulInputHandleRef, components::AvailableLineSizes};
 
 use crate::{
     components::{

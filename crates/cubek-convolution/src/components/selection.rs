@@ -1,13 +1,13 @@
-use cubecl_core::{Runtime, client::ComputeClient, ir::StorageType};
-use cubecl_matmul::components::{
+use cubecl::{Runtime, client::ComputeClient, ir::StorageType};
+use cubek_matmul::components::{
     MatmulLineSizes, SwizzleConfig,
     stage::{PartitionBuffering, SwizzleMode},
 };
 
-use cubecl_matmul::components::{
+use cubek_matmul::components::{
     MatmulAvailabilityError, MatmulElems, MatmulSelection, TilingScheme, adjust_dtypes,
 };
-use cubecl_matmul::{
+use cubek_matmul::{
     components::tile::TileMatmulFamily,
     kernels::layered::{NUM_SM_APPROX, NUM_TENSOR_CORES_APPROX, find_instruction_size},
 };

@@ -1,19 +1,19 @@
-use cubecl_core::server::LaunchError;
-use cubecl_core::{
-    CubeCount, Runtime, client::ComputeClient, ir::StorageType, prelude::TensorHandleRef,
-};
-use cubecl_matmul::components::{
-    InvalidConfigError, global::args::TensorMapArgs, stage::PlaneMatmulFamily,
-    tile::TileMatmulFamily,
-};
-use cubecl_matmul::components::{
-    MatmulElems, MatmulSelection, MatmulSetupError, stage::StridedStageFamily, tile::io::Strided,
-};
-use cubecl_matmul::components::{MatmulLineSizes, stage::NumStages};
-use cubecl_std::{
+use cubecl::server::LaunchError;
+use cubecl::std::{
     CubeOption,
     tensor::{TensorHandle, into_contiguous_pitched},
 };
+use cubecl::{
+    CubeCount, Runtime, client::ComputeClient, ir::StorageType, prelude::TensorHandleRef,
+};
+use cubek_matmul::components::{
+    InvalidConfigError, global::args::TensorMapArgs, stage::PlaneMatmulFamily,
+    tile::TileMatmulFamily,
+};
+use cubek_matmul::components::{
+    MatmulElems, MatmulSelection, MatmulSetupError, stage::StridedStageFamily, tile::io::Strided,
+};
+use cubek_matmul::components::{MatmulLineSizes, stage::NumStages};
 use std::marker::PhantomData;
 
 use crate::components::{

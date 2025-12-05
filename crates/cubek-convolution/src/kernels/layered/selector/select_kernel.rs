@@ -1,9 +1,9 @@
 use crate::components::ConvGemmConfig as _;
-use cubecl_core::prelude::TensorHandleRef;
-use cubecl_core::{Runtime, client::ComputeClient};
-use cubecl_matmul::components::MatmulElems;
-use cubecl_matmul::components::global::args::MatmulArgs;
-use cubecl_matmul::{
+use cubecl::prelude::TensorHandleRef;
+use cubecl::{Runtime, client::ComputeClient};
+use cubek_matmul::components::MatmulElems;
+use cubek_matmul::components::global::args::MatmulArgs;
+use cubek_matmul::{
     MatmulInputHandleRef,
     components::{
         InputArg, InputRuntimeArg, MatmulLineSizes, MatmulSelection, OutputArg, OutputRuntimeArg,

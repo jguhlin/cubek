@@ -1,6 +1,5 @@
 use cubecl::prelude::*;
-use cubecl_core::{self as cubecl};
-use cubecl_std::{
+use cubecl::std::{
     CubeOptionArgs, FastDivmod, FastDivmodArgs,
     tensor::{
         launch::ViewArg,
@@ -26,7 +25,7 @@ use crate::{
     },
     kernels::layered::algorithm::simple_tma::{calculate_lower_corner, calculate_upper_corner},
 };
-use cubecl_matmul::{
+use cubek_matmul::{
     MatmulInputHandleRef,
     components::{
         MatmulElems, MatmulLineSizes, MatmulSelection,

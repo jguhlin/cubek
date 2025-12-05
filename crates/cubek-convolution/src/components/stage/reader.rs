@@ -1,13 +1,13 @@
+use cubecl;
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_matmul::components::{
+use cubecl::std::tensor::layout::Coords2d;
+use cubek_matmul::components::{
     InvalidConfigError, MatrixLayout,
     stage::{
         StageMemoryConfig, StridedStageMemory, TilingLayout, TilingLayoutEnum, TilingValidation,
     },
     tile::StridedTile,
 };
-use cubecl_std::tensor::layout::Coords2d;
 
 #[derive(Clone, Copy)]
 /// Tiling layout specific for bias, which is one-dimensional with stride 0

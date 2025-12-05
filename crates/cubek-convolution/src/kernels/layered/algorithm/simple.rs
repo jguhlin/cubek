@@ -1,19 +1,19 @@
-use cubecl_core::server::LaunchError;
-use cubecl_core::{Runtime, client::ComputeClient, ir::StorageType, prelude::TensorHandleRef};
-use cubecl_matmul::components::{
+use cubecl::server::LaunchError;
+use cubecl::std::{
+    CubeOption,
+    tensor::{TensorHandle, into_contiguous_pitched},
+};
+use cubecl::{Runtime, client::ComputeClient, ir::StorageType, prelude::TensorHandleRef};
+use cubek_matmul::components::{
     MatmulElems, MatmulLineSizes, MatmulSelection, MatmulSetupError, stage::StridedStageFamily,
     tile::io::Strided,
 };
-use cubecl_matmul::components::{
+use cubek_matmul::components::{
     global::args::TensorArgs, stage::PlaneMatmulFamily, tile::TileMatmulFamily,
 };
-use cubecl_matmul::components::{
+use cubek_matmul::components::{
     global::read::sync_full_cyclic::SyncFullCyclicLoading,
     stage::{ColMajorTilingOrder, NumStages, RowMajorTilingOrder},
-};
-use cubecl_std::{
-    CubeOption,
-    tensor::{TensorHandle, into_contiguous_pitched},
 };
 use std::marker::PhantomData;
 

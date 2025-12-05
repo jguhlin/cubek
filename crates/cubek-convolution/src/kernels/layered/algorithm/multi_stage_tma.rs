@@ -1,17 +1,17 @@
 use std::marker::PhantomData;
 
-use cubecl_core::{
+use cubecl::{
     Runtime, client::ComputeClient, ir::StorageType, prelude::TensorHandleRef, server::LaunchError,
 };
 
-use cubecl_matmul::components::{
+use cubek_matmul::components::{
     MatmulElems, MatmulLineSizes, MatmulSelection, MatmulSetupError,
     global::args::TensorMapArgs,
     stage::{NumStages, PlaneMatmulFamily, StridedStageFamily},
     tile::{TileMatmulFamily, io::Strided},
 };
 
-use cubecl_std::{CubeOption, tensor::TensorHandle};
+use cubecl::std::{CubeOption, tensor::TensorHandle};
 
 use crate::components::{
     ConvolutionProblem, convolution_matmul_selection,

@@ -1,4 +1,4 @@
-use cubecl_matmul::components::{MatmulProblem, MatrixLayout};
+use cubek_matmul::components::{MatmulProblem, MatrixLayout};
 
 #[derive(Clone, Debug)]
 /// Description of a matmul problem to solve, regardless of actual data

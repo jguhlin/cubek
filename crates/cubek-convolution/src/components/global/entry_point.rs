@@ -1,13 +1,13 @@
+use cubecl;
 use cubecl::prelude::*;
-use cubecl_core as cubecl;
-use cubecl_core::{Runtime, client::ComputeClient};
-use cubecl_matmul::components::MatmulElems;
-use cubecl_matmul::components::global::GlobalConfig;
-use cubecl_matmul::components::stage::StageConfig as _;
-use cubecl_matmul::components::{
+use cubecl::std::{CubeOption, CubeOptionExpand, FastDivmod, FastDivmodArgs};
+use cubecl::{Runtime, client::ComputeClient};
+use cubek_matmul::components::MatmulElems;
+use cubek_matmul::components::global::GlobalConfig;
+use cubek_matmul::components::stage::StageConfig as _;
+use cubek_matmul::components::{
     InputRuntimeArg, OutputRuntimeArg, batch::SliceIndex, global::args::MatmulArgs,
 };
-use cubecl_std::{CubeOption, CubeOptionExpand, FastDivmod, FastDivmodArgs};
 
 use crate::components::{ConvGemmConfig, global::args::RuntimeArgs};
 use crate::components::{
