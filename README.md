@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://github.com/tracel-ai/cubek/tree/main/assets/image.webp" width="150px"/>
+<img src="https://raw.githubusercontent.com/tracel-ai/cubek/main/assets/image.webp" width="150px"/>
 
 <br />
 
