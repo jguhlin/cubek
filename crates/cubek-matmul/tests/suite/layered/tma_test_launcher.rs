@@ -1,13 +1,12 @@
-use cubecl::server::Allocation;
 use cubecl::{TestRuntime, prelude::*};
 
+use cubek_matmul::components::AvailableLineSizes;
 use cubek_matmul::components::MatmulProblem;
 use cubek_matmul::components::MatmulSelection;
 use cubek_matmul::components::batch::BatchConfig;
 use cubek_matmul::components::batch::BatchMatmulFamily;
 use cubek_matmul::components::global::args::TensorMapArgs;
 use cubek_matmul::components::global::args::{ConcreteInputsFactory, TensorMapInputs};
-use cubek_matmul::components::{AvailableLineSizes, MatrixLayout};
 use cubek_matmul::components::{MatmulElems, MatmulIdent};
 use cubek_matmul::kernels::layered::Algorithm;
 use cubek_matmul::{
@@ -16,9 +15,7 @@ use cubek_matmul::{
 };
 
 use crate::suite::TestEG;
-use crate::suite::test_utils::{Sample, assert_result};
-
-use super::matmul_test_launcher::{TensorRawParts, tensor_size, transpose};
+use crate::suite::test_utils::{assert_result, tensor_raw_parts};
 
 /// Test the correctness of the specified Matmul on the given device,
 /// against a naive CPU implementation over the given problem
@@ -158,112 +155,112 @@ pub fn test_tma_matmul_algorithm<A: Algorithm>(
     );
 }
 
-fn tensor_raw_parts<E: CubeElement + Numeric + Sample>(
-    client: &ComputeClient<TestRuntime>,
-    problem: &MatmulProblem,
-    ident: MatmulIdent,
-) -> TensorRawParts<E> {
-    match ident {
-        MatmulIdent::Lhs => {
-            let mut shape = problem.shape(ident);
+// fn tensor_raw_parts<E: CubeElement + Numeric + Sample>(
+//     client: &ComputeClient<TestRuntime>,
+//     problem: &MatmulProblem,
+//     ident: MatmulIdent,
+// ) -> TensorRawParts<E> {
+//     match ident {
+//         MatmulIdent::Lhs => {
+//             let mut tensor_shape = problem.shape(MatmulIdent::Lhs);
 
-            let handle = E::sample(client, &shape, 1234);
+//             let handle = E::sample(client, &tensor_shape, 1234);
 
-            let data = client.read_one_tensor(handle.as_copy_descriptor());
-            let data = E::from_bytes(&data);
-            let original_data = data.to_owned();
+//             let data = client.read_one_tensor(handle.as_copy_descriptor());
+//             let data = E::from_bytes(&data);
+//             let original_data = data.to_owned();
 
-            let rank = shape.len();
+//             let rank = tensor_shape.len();
 
-            let data = match problem.lhs_layout {
-                MatrixLayout::RowMajor => original_data.clone(),
-                MatrixLayout::ColMajor => {
-                    shape.swap(rank - 1, rank - 2);
-                    transpose::<E>(&original_data, problem.num_batches(), problem.m, problem.k)
-                }
-            };
+//             let data = match problem.lhs_layout {
+//                 MatrixLayout::RowMajor => original_data.clone(),
+//                 MatrixLayout::ColMajor => {
+//                     tensor_shape.swap(rank - 1, rank - 2);
+//                     transpose::<E>(&original_data, problem.num_batches(), problem.m, problem.k)
+//                 }
+//             };
 
-            let Allocation {
-                handle,
-                mut strides,
-            } = client.create_tensor_from_slice(
-                E::as_bytes(&data),
-                &shape,
-                E::type_size() as usize,
-            );
+//             let Allocation {
+//                 handle,
+//                 mut strides,
+//             } = client.create_tensor_from_slice(
+//                 E::as_bytes(&data),
+//                 &tensor_shape,
+//                 E::type_size() as usize,
+//             );
 
-            if matches!(problem.lhs_layout, MatrixLayout::ColMajor) {
-                shape.swap(rank - 1, rank - 2);
-                strides.swap(rank - 1, rank - 2);
-            }
+//             if matches!(problem.lhs_layout, MatrixLayout::ColMajor) {
+//                 tensor_shape.swap(rank - 1, rank - 2);
+//                 strides.swap(rank - 1, rank - 2);
+//             }
 
-            TensorRawParts {
-                handle,
-                scale: None,
-                shape,
-                strides,
-                original_data: Some(original_data),
-            }
-        }
-        MatmulIdent::Rhs => {
-            let mut shape = problem.shape(ident);
+//             TensorRawParts {
+//                 handle,
+//                 scale: None,
+//                 shape: tensor_shape,
+//                 strides,
+//                 original_data: Some(original_data),
+//             }
+//         }
+//         MatmulIdent::Rhs => {
+//             let mut tensor_shape = problem.shape(MatmulIdent::Rhs);
 
-            let handle = E::sample(client, &shape, 5678);
+//             let handle = E::sample(client, &tensor_shape, 5678);
 
-            let data = client.read_one_tensor(handle.as_copy_descriptor());
-            let data = E::from_bytes(&data);
-            let original_data = data.to_owned();
+//             let data = client.read_one_tensor(handle.as_copy_descriptor());
+//             let data = E::from_bytes(&data);
+//             let original_data = data.to_owned();
 
-            let rank = shape.len();
+//             let rank = tensor_shape.len();
 
-            let data = match problem.rhs_layout {
-                MatrixLayout::RowMajor => original_data.clone(),
-                MatrixLayout::ColMajor => {
-                    shape.swap(rank - 1, rank - 2);
-                    transpose::<E>(&original_data, problem.num_batches(), problem.k, problem.n)
-                }
-            };
+//             let data = match problem.rhs_layout {
+//                 MatrixLayout::RowMajor => original_data.clone(),
+//                 MatrixLayout::ColMajor => {
+//                     tensor_shape.swap(rank - 1, rank - 2);
+//                     transpose::<E>(&original_data, problem.num_batches(), problem.k, problem.n)
+//                 }
+//             };
 
-            let Allocation {
-                handle,
-                mut strides,
-            } = client.create_tensor_from_slice(
-                E::as_bytes(&data),
-                &shape,
-                E::type_size() as usize,
-            );
+//             let Allocation {
+//                 handle,
+//                 mut strides,
+//             } = client.create_tensor_from_slice(
+//                 E::as_bytes(&data),
+//                 &tensor_shape,
+//                 E::type_size() as usize,
+//             );
 
-            if matches!(problem.rhs_layout, MatrixLayout::ColMajor) {
-                shape.swap(rank - 1, rank - 2);
-                strides.swap(rank - 1, rank - 2);
-            }
+//             if matches!(problem.rhs_layout, MatrixLayout::ColMajor) {
+//                 tensor_shape.swap(rank - 1, rank - 2);
+//                 strides.swap(rank - 1, rank - 2);
+//             }
 
-            TensorRawParts {
-                handle,
-                scale: None,
-                shape,
-                strides,
-                original_data: Some(original_data),
-            }
-        }
-        MatmulIdent::Out => {
-            let zero = E::from_int(0);
+//             TensorRawParts {
+//                 handle,
+//                 scale: None,
+//                 shape: tensor_shape,
+//                 strides,
+//                 original_data: Some(original_data),
+//             }
+//         }
+//         MatmulIdent::Out => {
+//             let zero = E::from_int(0);
 
-            let data = vec![zero; tensor_size(problem, MatmulIdent::Out)];
+//             let data = vec![zero; tensor_size(problem, MatmulIdent::Out)];
 
-            let shape = problem.shape(MatmulIdent::Out);
-            let Allocation { handle, strides } = client.create_tensor_from_slice(
-                E::as_bytes(&data),
-                &shape,
-                E::type_size() as usize,
-            );
-            TensorRawParts {
-                handle,
-                scale: None,
-                shape,
-                strides,
-                original_data: None,
-            }
-        }
-    }
-}
+//             let tensor_shape = problem.shape(MatmulIdent::Out);
+//             let Allocation { handle, strides } = client.create_tensor_from_slice(
+//                 E::as_bytes(&data),
+//                 &tensor_shape,
+//                 E::type_size() as usize,
+//             );
+//             TensorRawParts {
+//                 handle,
+//                 scale: None,
+//                 shape: tensor_shape,
+//                 strides,
+//                 original_data: None,
+//             }
+//         }
+//     }
+// }

@@ -2,13 +2,17 @@
 macro_rules! testgen_matmul_launch {
     (Normal, $algorithm: ty, $precision: ty, $selection: expr, $problem: expr) => {
         use cubecl::prelude::*;
+        use cubek_matmul::components::MatmulElems;
         use $crate::suite::layered::matmul_test_launcher::test_matmul_algorithm;
 
         #[test]
         pub fn test() {
             let client = cubecl::TestRuntime::client(&Default::default());
-            test_matmul_algorithm::<$algorithm, $precision, cubecl::TestRuntime>(
-                client, $problem, $selection,
+            test_matmul_algorithm::<$algorithm>(
+                client,
+                $problem,
+                $selection,
+                MatmulElems::new::<$precision>(),
             );
         }
     };
@@ -20,8 +24,11 @@ macro_rules! testgen_matmul_launch {
         #[test]
         pub fn test() {
             let client = cubecl::TestRuntime::client(&Default::default());
-            test_tma_matmul_algorithm::<$algorithm, $precision, cubecl::TestRuntime>(
-                client, $problem, $selection,
+            test_tma_matmul_algorithm::<$algorithm>(
+                client,
+                $problem,
+                $selection,
+                MatmulElems::new::<$precision>(),
             );
         }
     };

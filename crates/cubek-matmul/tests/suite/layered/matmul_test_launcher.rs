@@ -5,7 +5,7 @@ use cubecl::{
 };
 
 use crate::suite::TestEG;
-use crate::suite::{test_utils::assert_result, test_utils_2::tensor_raw_parts};
+use crate::suite::test_utils::{assert_result, tensor_raw_parts};
 use cubek_matmul::components::{
     MatmulElems,
     global::args::{ConcreteOutputFactory, TensorArgs, TensorOutput},

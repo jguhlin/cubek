@@ -1,6 +1,7 @@
 #![allow(missing_docs)]
 
-pub type TestEG = half::f16;
+// pub type TestEG = half::f16;
+pub type TestEG = f32;
 pub type TestES = half::f16;
 pub type TestEA = f32;
 // TestEG: Float + CubeElement + Display + CastInto<TestES> + Sample + MatmulPrecision,
@@ -10,7 +11,6 @@ pub type TestEA = f32;
 pub mod layered;
 pub mod naive;
 pub mod test_utils;
-pub mod test_utils_2;
 
 mod unit {
     crate::testgen_matmul_unit!();

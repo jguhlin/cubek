@@ -1,5 +1,5 @@
 use crate::suite::layered::matmul_test_launcher::tensor_size;
-use crate::suite::test_utils::Sample;
+use crate::suite::test_utils::sample::Sample;
 use cubecl::{TestRuntime, prelude::*};
 use cubecl::{
     client::ComputeClient,
@@ -80,7 +80,7 @@ pub(crate) fn tensor_raw_parts<E: CubeElement + Numeric + Sample>(
             };
 
             let descriptors = vec![(
-                AllocationDescriptor::optimized(tensor_shape.as_slice(), size_of::<E>()),
+                AllocationDescriptor::optimized(tensor_shape.as_slice(), E::type_size() as usize),
                 E::as_bytes(&data),
             )];
 
