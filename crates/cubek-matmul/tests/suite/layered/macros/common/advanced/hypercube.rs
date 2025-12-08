@@ -1,9 +1,5 @@
-// #[macro_export]
-// macro_rules! testgen_matmul_hypercube {
-//     ($kind: ident, $algorithm: ty, $precision: ty, $selection_builder: expr) => {
 #[cfg(not(feature = "matmul_tests_hypercube"))]
 pub mod row_fp {
-
     use super::*;
     use cubek_matmul::components::batch::{
         CubeCountPlanSelection, GlobalOrder, GlobalOrderSelection, HypercubeSelection,
@@ -18,52 +14,23 @@ pub mod row_fp {
 
     include!("partition_buffering.rs");
 }
-// $crate::testgen_matmul_partition_buffering!(
-//     $kind,
-//     $algorithm,
-//     $precision,
-//     $selection_builder
-// );
 
-// #[cfg(feature = "matmul_tests_hypercube")]
-// mod row_fp {
-//     use super::*;
-//     use cubek_matmul::components::batch::{
-//         CubeCountPlanSelection, GlobalOrder, GlobalOrderSelection, HypercubeSelection,
-//     };
+#[cfg(feature = "matmul_tests_hypercube")]
+mod swizzlecol_fp {
+    use super::*;
+    use cubek_matmul::components::batch::{
+        CubeCountPlanSelection, GlobalOrder, GlobalOrderSelection, HypercubeSelection,
+    };
 
-//     $crate::testgen_matmul_partition_buffering!(
-//         $kind,
-//         $algorithm,
-//         $precision,
-//         $selection_builder.hypercube_config(
-//             HypercubeSelection::builder(&$selection_builder.tiling_scheme.unwrap())
-//                 .global_order(GlobalOrderSelection::Fixed(GlobalOrder::RowMajor))
-//                 .cube_count_plan(CubeCountPlanSelection::FromProblem)
-//                 .build()
-//         )
-//     );
-// }
+    fn hypercube_selection(tiling_scheme: &TilingScheme) -> HypercubeSelection {
+        HypercubeSelection::builder(tiling_scheme)
+            .global_order(GlobalOrderSelection::Fixed(GlobalOrder::SwizzleColMajor(2)))
+            .cube_count_plan(CubeCountPlanSelection::FromProblem)
+            .build()
+    }
 
-// #[cfg(feature = "matmul_tests_hypercube")]
-// mod swizzlecol_fp {
-//     use super::*;
-//     use cubek_matmul::components::batch::{
-//         CubeCountPlanSelection, GlobalOrder, GlobalOrderSelection, HypercubeSelection,
-//     };
-
-//     $crate::testgen_matmul_partition_buffering!(
-//         $kind,
-//         $algorithm,
-//         $precision,
-//         $selection_builder.hypercube_config(
-//             HypercubeSelection::builder(&$selection_builder.tiling_scheme.unwrap())
-//                 .global_order(GlobalOrderSelection::Fixed(GlobalOrder::SwizzleColMajor(2)))
-//                 .cube_count_plan(CubeCountPlanSelection::FromProblem)
-//                 .build()
-//         )
-//     );
-// }
+    include!("partition_buffering.rs");
+}
 
 // #[cfg(feature = "matmul_tests_hypercube")]
 // mod col_fl {

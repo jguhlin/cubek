@@ -1,87 +1,63 @@
-// #[macro_export]
-// macro_rules! testgen_matmul_swizzle {
-//     ($kind: ident, $algorithm: ty, $precision: ty, $selection_builder: expr) => {
-// use cubek_matmul::components::stage::SwizzleMode;
-
 #[cfg(not(feature = "matmul_tests_swizzle"))]
 mod no_swizzle {
     use super::*;
-    use cubek_matmul::components::SwizzleConfig;
-    //    $crate::testgen_matmul_hypercube!(
-    //             $kind,
-    //             $algorithm,
-    //             $precision,
-    //             $selection_builder.shared_swizzle(SwizzleConfig::default())
-    //         );
+    use cubek_matmul::components::{SwizzleConfig, stage::SwizzleMode};
+
     fn swizzle() -> SwizzleConfig {
-        SwizzleConfig::default()
+        SwizzleConfig {
+            lhs: SwizzleMode::None,
+            rhs: SwizzleMode::None,
+            ..Default::default()
+        }
     }
 
     include!("hypercube.rs");
 }
 
-// #[cfg(not(feature = "matmul_tests_swizzle"))]
-// mod none {
-//     use super::*;
+#[cfg(feature = "matmul_tests_swizzle")]
+mod b32 {
+    use super::*;
+    use cubek_matmul::components::{SwizzleConfig, stage::SwizzleMode};
 
-//     $crate::testgen_matmul_hypercube!(
-//         $kind,
-//         $algorithm,
-//         $precision,
-//         $selection_builder.shared_swizzle(SwizzleConfig {
-//             lhs: SwizzleMode::None,
-//             rhs: SwizzleMode::None,
-//             ..Default::default()
-//         })
-//     );
-// }
+    fn swizzle() -> SwizzleConfig {
+        SwizzleConfig {
+            lhs: SwizzleMode::B32,
+            rhs: SwizzleMode::B32,
+            ..Default::default()
+        }
+    }
 
-// #[cfg(feature = "matmul_tests_swizzle")]
-// mod b32 {
-//     use super::*;
+    include!("hypercube.rs");
+}
 
-//     $crate::testgen_matmul_hypercube!(
-//         $kind,
-//         $algorithm,
-//         $precision,
-//         $selection_builder.shared_swizzle(SwizzleConfig {
-//             lhs: SwizzleMode::B32,
-//             rhs: SwizzleMode::B32,
-//             ..Default::default()
-//         })
-//     );
-// }
+#[cfg(feature = "matmul_tests_swizzle")]
+mod b64 {
+    use super::*;
+    use cubek_matmul::components::{SwizzleConfig, stage::SwizzleMode};
 
-// #[cfg(feature = "matmul_tests_swizzle")]
-// mod b64 {
-//     use super::*;
+    fn swizzle() -> SwizzleConfig {
+        SwizzleConfig {
+            lhs: SwizzleMode::B64,
+            rhs: SwizzleMode::B64,
+            ..Default::default()
+        }
+    }
 
-//     $crate::testgen_matmul_hypercube!(
-//         $kind,
-//         $algorithm,
-//         $precision,
-//         $selection_builder.shared_swizzle(SwizzleConfig {
-//             lhs: SwizzleMode::B64,
-//             rhs: SwizzleMode::B64,
-//             ..Default::default()
-//         })
-//     );
-// }
+    include!("hypercube.rs");
+}
 
-// #[cfg(feature = "matmul_tests_swizzle")]
-// mod b128 {
-//     use super::*;
+#[cfg(feature = "matmul_tests_swizzle")]
+mod b128 {
+    use super::*;
+    use cubek_matmul::components::{SwizzleConfig, stage::SwizzleMode};
 
-//     $crate::testgen_matmul_hypercube!(
-//         $kind,
-//         $algorithm,
-//         $precision,
-//         $selection_builder.shared_swizzle(SwizzleConfig {
-//             lhs: SwizzleMode::B128,
-//             rhs: SwizzleMode::B128,
-//             ..Default::default()
-//         })
-//     );
-// }
-//     };
-// }
+    fn swizzle() -> SwizzleConfig {
+        SwizzleConfig {
+            lhs: SwizzleMode::B128,
+            rhs: SwizzleMode::B128,
+            ..Default::default()
+        }
+    }
+
+    include!("hypercube.rs");
+}

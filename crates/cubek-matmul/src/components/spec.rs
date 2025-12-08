@@ -278,6 +278,24 @@ impl MatmulElems {
         }
     }
 
+    pub fn from_eg_es_ea<EG: Numeric, ES: Numeric, EA: Numeric>() -> Self {
+        let eg = MatmulElemType::new(EG::as_type_native_unchecked(), false);
+        let es = MatmulElemType::new(ES::as_type_native_unchecked(), false);
+        let ea = MatmulElemType::new(EA::as_type_native_unchecked(), false);
+
+        Self {
+            lhs_global: eg,
+            rhs_global: eg,
+            acc_global: eg,
+            lhs_stage: es,
+            rhs_stage: es,
+            acc_stage: ea,
+            lhs_register: es,
+            rhs_register: es,
+            acc_register: ea,
+        }
+    }
+
     pub fn global(&self, ident: MatmulIdent) -> MatmulElemType {
         match ident {
             MatmulIdent::Lhs => self.lhs_global,

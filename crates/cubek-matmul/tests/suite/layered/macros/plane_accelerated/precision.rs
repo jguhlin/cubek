@@ -1,21 +1,21 @@
-// #[cfg(feature = "matmul_tests_f16")]
+#[cfg(feature = "matmul_tests_f16")]
 mod f16_ty {
     use super::*;
-    type Precision = half::f16;
-    pub type TestEG = Precision;
-    pub type TestES = Precision;
-    pub type TestEA = Precision;
+
+    pub type TestEG = half::f16;
+    pub type TestES = half::f16;
+    pub type TestEA = half::f16;
 
     include!("tiling_scheme/tile.rs");
-
-    // use super::*;
-
-    // crate::testgen_matmul_accelerated_tiling_scheme!($algorithm, half::f16);
 }
 
-// #[cfg(feature = "matmul_tests_f32")]
-// mod f32_ty {
-//     use super::*;
+#[cfg(feature = "matmul_tests_f32")]
+mod f32_ty {
+    use super::*;
 
-//     crate::testgen_matmul_accelerated_tiling_scheme!($algorithm, f32);
-// }
+    pub type TestEG = f32;
+    pub type TestES = f32;
+    pub type TestEA = f32;
+
+    include!("tiling_scheme/tile.rs");
+}

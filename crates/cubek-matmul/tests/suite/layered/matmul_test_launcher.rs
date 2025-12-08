@@ -1,166 +1,173 @@
-mod matmul_test_launcher {
-    use super::*;
+use std::fmt::Display;
 
-    use cubecl::TestRuntime;
-    use cubecl::prelude::*;
+use cubecl::TestRuntime;
+use cubecl::prelude::*;
 
-    use crate::suite::test_utils::{assert_result, tensor_raw_parts};
-    use cubek_matmul::components::global::args::ConcreteInputsFactory;
-    use cubek_matmul::components::{
-        MatmulElems,
-        global::args::{ConcreteOutputFactory, TensorArgs, TensorOutput},
+use crate::suite::test_utils::CastInto;
+use crate::suite::test_utils::Sample;
+use crate::suite::test_utils::{assert_result, tensor_raw_parts};
+use cubek_matmul::components::global::args::ConcreteInputsFactory;
+use cubek_matmul::components::{
+    MatmulElems,
+    global::args::{ConcreteOutputFactory, TensorArgs, TensorOutput},
+};
+use cubek_matmul::components::{MatmulProblem, MatmulSelection};
+use cubek_matmul::components::{
+    batch::{BatchConfig, BatchMatmulFamily},
+    global::args::TensorInputs,
+};
+use cubek_matmul::kernels::layered::Algorithm;
+use cubek_matmul::{
+    MatmulInputHandleRef,
+    components::{AvailableLineSizes, MatmulIdent},
+};
+
+/// Test the correctness of the specified Matmul on the given device,
+/// against a naive CPU implementation over the given problem
+pub fn test_matmul_algorithm<
+    EG: Float + CubeElement + Display + CastInto<ES> + Sample,
+    ES: Numeric + CastInto<EA> + Sample,
+    EA: Numeric + CastInto<EG> + Sample,
+    A: Algorithm,
+>(
+    client: ComputeClient<TestRuntime>,
+    mut problem: MatmulProblem,
+    selection: MatmulSelection,
+) {
+    let env = std::env::var("CUBEK_TEST_MODE");
+
+    let panic_on_launch_err = match env {
+        Ok(val) => match val.as_str() {
+            "panic" => true,
+            "skip" => false,
+            _ => false,
+        },
+        Err(_) => false,
     };
-    use cubek_matmul::components::{MatmulProblem, MatmulSelection};
-    use cubek_matmul::components::{
-        batch::{BatchConfig, BatchMatmulFamily},
-        global::args::TensorInputs,
-    };
-    use cubek_matmul::kernels::layered::Algorithm;
-    use cubek_matmul::{
-        MatmulInputHandleRef,
-        components::{AvailableLineSizes, MatmulIdent},
-    };
 
-    /// Test the correctness of the specified Matmul on the given device,
-    /// against a naive CPU implementation over the given problem
-    pub fn test_matmul_algorithm<A: Algorithm>(
-        client: ComputeClient<TestRuntime>,
-        mut problem: MatmulProblem,
-        selection: MatmulSelection,
-        dtypes: MatmulElems,
-    ) {
-        let env = std::env::var("CUBEK_TEST_MODE");
+    let dtypes = MatmulElems::from_eg_es_ea::<EG, ES, EA>();
 
-        let panic_on_launch_err = match env {
-            Ok(val) => match val.as_str() {
-                "panic" => true,
-                "skip" => false,
-                _ => false,
-            },
-            Err(_) => false,
-        };
-        let lhs = tensor_raw_parts::<TestEG>(&client, &problem, MatmulIdent::Lhs);
-        let rhs = tensor_raw_parts::<TestEG>(&client, &problem, MatmulIdent::Rhs);
-        let out = tensor_raw_parts::<TestEG>(&client, &problem, MatmulIdent::Out);
+    let lhs = tensor_raw_parts::<EG>(&client, &problem, MatmulIdent::Lhs);
+    let rhs = tensor_raw_parts::<EG>(&client, &problem, MatmulIdent::Rhs);
+    let out = tensor_raw_parts::<EG>(&client, &problem, MatmulIdent::Out);
 
-        problem.lhs_strides = lhs.strides.clone();
-        problem.rhs_strides = rhs.strides.clone();
+    problem.lhs_strides = lhs.strides.clone();
+    problem.rhs_strides = rhs.strides.clone();
 
-        let line_sizes = AvailableLineSizes::from_type_sizes(
-            &client,
-            dtypes.lhs_global.size(),
-            dtypes.rhs_global.size(),
-            dtypes.acc_global.size(),
-        );
-        let line_sizes = A::filter_line_sizes(line_sizes);
-        let line_sizes = line_sizes
-            .filter_lhs_with_tensor(&lhs.strides, &lhs.shape, problem.lhs_layout)
-            .filter_rhs_with_tensor(&rhs.strides, &rhs.shape, problem.rhs_layout)
-            .filter_out_with_tensor(&out.strides, &out.shape)
-            .pick_max()
-            .unwrap();
+    let line_sizes = AvailableLineSizes::from_type_sizes(
+        &client,
+        dtypes.lhs_global.size(),
+        dtypes.rhs_global.size(),
+        dtypes.acc_global.size(),
+    );
+    let line_sizes = A::filter_line_sizes(line_sizes);
+    let line_sizes = line_sizes
+        .filter_lhs_with_tensor(&lhs.strides, &lhs.shape, problem.lhs_layout)
+        .filter_rhs_with_tensor(&rhs.strides, &rhs.shape, problem.rhs_layout)
+        .filter_out_with_tensor(&out.strides, &out.shape)
+        .pick_max()
+        .unwrap();
 
-        let config = match A::setup(&client, &problem, &selection, &line_sizes, &dtypes) {
-            Ok(config) => config,
-            Err(err) => {
-                let msg = format!("Can't launch the test: {err}");
-                if panic_on_launch_err {
-                    panic!("{msg}");
-                } else {
-                    println!("{msg}");
-                    return;
-                }
+    let config = match A::setup(&client, &problem, &selection, &line_sizes, &dtypes) {
+        Ok(config) => config,
+        Err(err) => {
+            let msg = format!("Can't launch the test: {err}");
+            if panic_on_launch_err {
+                panic!("{msg}");
+            } else {
+                println!("{msg}");
+                return;
             }
-        };
-
-        let props = &client.properties().hardware;
-        if !props.max_cube_dim.can_contain(config.cube_dim())
-            || config.cube_dim().num_elems() > props.max_units_per_cube
-        {
-            println!("Skipping test, too many resources requested");
-            return;
         }
+    };
 
-        let cube_count_plan = config.hypercube_config().cube_count_plan(
-            &problem,
-            client.properties().hardware.max_cube_count.clone(),
-        );
+    let props = &client.properties().hardware;
+    if !props.max_cube_dim.can_contain(config.cube_dim())
+        || config.cube_dim().num_elems() > props.max_units_per_cube
+    {
+        println!("Skipping test, too many resources requested");
+        return;
+    }
 
-        // let elem_size = ;
-        let lhs_handle = MatmulInputHandleRef::Normal(
-            unsafe {
-                TensorHandleRef::from_raw_parts(
-                    &lhs.handle,
-                    &lhs.strides,
-                    &lhs.shape,
-                    dtypes.lhs_global.size(),
-                )
-            },
-            *dtypes.lhs_global,
-        );
-        let rhs_handle = MatmulInputHandleRef::Normal(
-            unsafe {
-                TensorHandleRef::from_raw_parts(
-                    &rhs.handle,
-                    &rhs.strides,
-                    &rhs.shape,
-                    dtypes.rhs_global.size(),
-                )
-            },
-            *dtypes.rhs_global,
-        );
-        let out_handle = unsafe {
+    let cube_count_plan = config.hypercube_config().cube_count_plan(
+        &problem,
+        client.properties().hardware.max_cube_count.clone(),
+    );
+
+    // let elem_size = ;
+    let lhs_handle = MatmulInputHandleRef::Normal(
+        unsafe {
             TensorHandleRef::from_raw_parts(
-                &out.handle,
-                &out.strides,
-                &out.shape,
-                dtypes.acc_global.size(),
+                &lhs.handle,
+                &lhs.strides,
+                &lhs.shape,
+                dtypes.lhs_global.size(),
             )
-        };
+        },
+        *dtypes.lhs_global,
+    );
+    let rhs_handle = MatmulInputHandleRef::Normal(
+        unsafe {
+            TensorHandleRef::from_raw_parts(
+                &rhs.handle,
+                &rhs.strides,
+                &rhs.shape,
+                dtypes.rhs_global.size(),
+            )
+        },
+        *dtypes.rhs_global,
+    );
+    let out_handle = unsafe {
+        TensorHandleRef::from_raw_parts(
+            &out.handle,
+            &out.strides,
+            &out.shape,
+            dtypes.acc_global.size(),
+        )
+    };
 
-        let result = unsafe {
-            A::BatchMatmul::launch_unchecked::<TensorArgs, TestRuntime>(
+    let result = unsafe {
+        A::BatchMatmul::launch_unchecked::<TensorArgs, TestRuntime>(
+            &client,
+            config.cube_dim(),
+            cube_count_plan.resolve(),
+            TensorInputs::create(
                 &client,
-                config.cube_dim(),
-                cube_count_plan.resolve(),
-                TensorInputs::create(
-                    &client,
-                    &lhs_handle,
-                    &rhs_handle,
-                    &selection,
-                    &problem,
-                    &line_sizes,
-                    config,
-                    &dtypes,
-                ),
-                TensorOutput::create(
-                    &client,
-                    &out_handle,
-                    &selection,
-                    &problem,
-                    &line_sizes,
-                    config,
-                    &dtypes,
-                ),
-                cube_count_plan.as_args(),
+                &lhs_handle,
+                &rhs_handle,
+                &selection,
+                &problem,
+                &line_sizes,
                 config,
                 &dtypes,
-            )
-        };
+            ),
+            TensorOutput::create(
+                &client,
+                &out_handle,
+                &selection,
+                &problem,
+                &line_sizes,
+                config,
+                &dtypes,
+            ),
+            cube_count_plan.as_args(),
+            config,
+            &dtypes,
+        )
+    };
 
-        match result {
-            Ok(_) => {}
-            Err(_err) => return,
-        }
-
-        assert_result::<TestEG, TestES, TestEA>(
-            &lhs.original_data.unwrap(),
-            &rhs.original_data.unwrap(),
-            &problem,
-            &client,
-            out.handle,
-            &out.shape,
-            &out.strides,
-        );
+    match result {
+        Ok(_) => {}
+        Err(_err) => return,
     }
+
+    assert_result::<EG, ES, EA>(
+        &lhs.original_data.unwrap(),
+        &rhs.original_data.unwrap(),
+        &problem,
+        &client,
+        out.handle,
+        &out.shape,
+        &out.strides,
+    );
 }

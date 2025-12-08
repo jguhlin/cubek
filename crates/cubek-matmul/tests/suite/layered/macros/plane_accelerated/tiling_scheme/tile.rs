@@ -1,85 +1,74 @@
-// #[macro_export]
-// macro_rules! testgen_matmul_accelerated_tile {
-//     ($algorithm: ty, $precision: ty, $tiling_scheme_builder: expr) => {
-//         use cubek_matmul::components::TileSize;
-
 #[cfg(target_os = "macos")]
 mod t8x8x8 {
     use super::*;
     use cubek_matmul::components::{TileSize, TilingScheme, TilingSchemeBuilder};
 
-    fn builder() -> TilingSchemeBuilder {
-        TilingScheme::builder().with_tile_size(TileSize { m: 8, n: 8, k: 8 })
+    fn tile_size(builder: TilingSchemeBuilder) -> TilingSchemeBuilder {
+        builder.with_tile_size(TileSize { m: 8, n: 8, k: 8 })
     }
-
-    // use super::*;
-
-    // $crate::testgen_matmul_accelerated_partition!(
-    //     $algorithm,
-    //     $precision,
-    //     $tiling_scheme_builder.with_tile_size(TileSize { m: 8, n: 8, k: 8 })
-    // );
 
     include!("partition.rs");
 }
 
-// #[cfg(not(target_os = "macos"))]
-// mod t16x16x16 {
-//     use super::*;
+#[cfg(not(target_os = "macos"))]
+mod t16x16x16 {
+    use super::*;
+    use cubek_matmul::components::{TileSize, TilingScheme, TilingSchemeBuilder};
 
-//     $crate::testgen_matmul_accelerated_partition!(
-//         $algorithm,
-//         $precision,
-//         $tiling_scheme_builder.with_tile_size(TileSize {
-//             m: 16,
-//             n: 16,
-//             k: 16
-//         })
-//     );
-// }
+    fn tile_size(builder: TilingSchemeBuilder) -> TilingSchemeBuilder {
+        builder.with_tile_size(TileSize {
+            m: 16,
+            n: 16,
+            k: 16,
+        })
+    }
 
-// #[cfg(not(target_os = "macos"))]
-// mod t32x8x16 {
-//     use super::*;
+    include!("partition.rs");
+}
 
-//     $crate::testgen_matmul_accelerated_partition!(
-//         $algorithm,
-//         $precision,
-//         $tiling_scheme_builder.with_tile_size(TileSize { m: 32, n: 8, k: 16 })
-//     );
-// }
+#[cfg(not(target_os = "macos"))]
+mod t32x8x16 {
+    use super::*;
+    use cubek_matmul::components::{TileSize, TilingScheme, TilingSchemeBuilder};
 
-// #[cfg(not(target_os = "macos"))]
-// mod t8x32x16 {
-//     use super::*;
+    fn tile_size(builder: TilingSchemeBuilder) -> TilingSchemeBuilder {
+        builder.with_tile_size(TileSize { m: 32, n: 8, k: 16 })
+    }
 
-//     $crate::testgen_matmul_accelerated_partition!(
-//         $algorithm,
-//         $precision,
-//         $tiling_scheme_builder.with_tile_size(TileSize { m: 8, n: 32, k: 16 })
-//     );
-// }
+    include!("partition.rs");
+}
 
-// #[cfg(not(target_os = "macos"))]
-// mod t16x16x8 {
-//     use super::*;
+#[cfg(not(target_os = "macos"))]
+mod t8x32x16 {
+    use super::*;
+    use cubek_matmul::components::{TileSize, TilingScheme, TilingSchemeBuilder};
 
-//     $crate::testgen_matmul_accelerated_partition!(
-//         $algorithm,
-//         $precision,
-//         $tiling_scheme_builder.with_tile_size(TileSize { m: 16, n: 16, k: 8 })
-//     );
-// }
+    fn tile_size(builder: TilingSchemeBuilder) -> TilingSchemeBuilder {
+        builder.with_tile_size(TileSize { m: 8, n: 32, k: 16 })
+    }
 
-// #[cfg(feature = "matmul_tests_mma")]
-// mod t16x8x16 {
-//     use super::*;
+    include!("partition.rs");
+}
 
-//     $crate::testgen_matmul_accelerated_partition!(
-//         $algorithm,
-//         $precision,
-//         $tiling_scheme_builder.with_tile_size(TileSize { m: 16, n: 8, k: 16 })
-//     );
-// }
-//     };
-// }
+#[cfg(not(target_os = "macos"))]
+mod t16x16x8 {
+    use super::*;
+    use cubek_matmul::components::{TileSize, TilingScheme, TilingSchemeBuilder};
+
+    fn tile_size(builder: TilingSchemeBuilder) -> TilingSchemeBuilder {
+        builder.with_tile_size(TileSize { m: 16, n: 16, k: 8 })
+    }
+
+    include!("partition.rs");
+}
+
+#[cfg(feature = "matmul_tests_mma")]
+mod t16x8x16 {
+    use super::*;
+
+    fn tile_size(builder: TilingSchemeBuilder) -> TilingSchemeBuilder {
+        builder.with_tile_size(TileSize { m: 16, n: 8, k: 16 })
+    }
+
+    include!("partition.rs");
+}
