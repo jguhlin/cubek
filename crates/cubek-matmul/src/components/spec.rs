@@ -278,21 +278,17 @@ impl MatmulElems {
         }
     }
 
-    pub fn from_eg_es_ea<EG: Numeric, ES: Numeric, EA: Numeric>() -> Self {
-        let eg = MatmulElemType::new(EG::as_type_native_unchecked(), false);
-        let es = MatmulElemType::new(ES::as_type_native_unchecked(), false);
-        let ea = MatmulElemType::new(EA::as_type_native_unchecked(), false);
-
+    pub fn from_single_dtype(dtype: MatmulElemType) -> Self {
         Self {
-            lhs_global: eg,
-            rhs_global: eg,
-            acc_global: eg,
-            lhs_stage: es,
-            rhs_stage: es,
-            acc_stage: ea,
-            lhs_register: es,
-            rhs_register: es,
-            acc_register: ea,
+            lhs_global: dtype,
+            rhs_global: dtype,
+            acc_global: dtype,
+            lhs_stage: dtype,
+            rhs_stage: dtype,
+            acc_stage: dtype,
+            lhs_register: dtype,
+            rhs_register: dtype,
+            acc_register: dtype,
         }
     }
 

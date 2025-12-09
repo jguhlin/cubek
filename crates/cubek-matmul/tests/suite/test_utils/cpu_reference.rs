@@ -1,121 +1,10 @@
-use cubecl::{flex32, prelude::Numeric, tf32};
-use cubek_matmul::components::{MatmulIdent, MatmulProblem};
-
-use crate::suite::test_utils::strides;
-
-pub trait CastInto<E> {
-    fn cast_into(self) -> E;
-}
-
-impl<E> CastInto<E> for E {
-    fn cast_into(self) -> E {
-        self
-    }
-}
-
-impl CastInto<f32> for half::f16 {
-    fn cast_into(self) -> f32 {
-        f32::from(self)
-    }
-}
-
-impl CastInto<f32> for half::bf16 {
-    fn cast_into(self) -> f32 {
-        f32::from(self)
-    }
-}
-
-impl CastInto<f32> for flex32 {
-    fn cast_into(self) -> f32 {
-        f32::from(self)
-    }
-}
-
-impl CastInto<half::bf16> for f32 {
-    fn cast_into(self) -> half::bf16 {
-        half::bf16::from_f32(self)
-    }
-}
-
-impl CastInto<half::bf16> for half::f16 {
-    fn cast_into(self) -> half::bf16 {
-        half::bf16::from_f32(self.to_f32())
-    }
-}
-
-impl CastInto<half::f16> for half::bf16 {
-    fn cast_into(self) -> half::f16 {
-        half::f16::from_f32(self.to_f32())
-    }
-}
-
-impl CastInto<half::f16> for f32 {
-    fn cast_into(self) -> half::f16 {
-        half::f16::from_f32(self)
-    }
-}
-
-impl CastInto<half::f16> for flex32 {
-    fn cast_into(self) -> half::f16 {
-        half::f16::from_f32(self.to_f32())
-    }
-}
-
-impl CastInto<half::bf16> for flex32 {
-    fn cast_into(self) -> half::bf16 {
-        half::bf16::from_f32(self.to_f32())
-    }
-}
-
-impl CastInto<flex32> for f32 {
-    fn cast_into(self) -> flex32 {
-        flex32::from_f32(self)
-    }
-}
-
-impl CastInto<f32> for tf32 {
-    fn cast_into(self) -> f32 {
-        self.to_f32()
-    }
-}
-
-impl CastInto<tf32> for f32 {
-    fn cast_into(self) -> tf32 {
-        tf32::from_f32(self)
-    }
-}
-
-impl CastInto<u16> for u8 {
-    fn cast_into(self) -> u16 {
-        self as u16
-    }
-}
-
-impl CastInto<i32> for u16 {
-    fn cast_into(self) -> i32 {
-        self as i32
-    }
-}
-
-impl CastInto<u8> for i32 {
-    fn cast_into(self) -> u8 {
-        self as u8
-    }
-}
+use cubek_matmul::components::{MatmulIdent, MatmulProblem, MatrixLayout};
 
 /// Solves a matmul problem with EG inputs, multiplied as ES and accumulated as EA.
 ///
 /// This is a naive CPU implementation, very slow on large payloads,
 /// not designed to be used for other purposes than testing.
-pub(crate) fn matmul_cpu_reference<
-    EG: Numeric + CastInto<ES>,
-    ES: Numeric + CastInto<EA>,
-    EA: Numeric + CastInto<EG>,
->(
-    lhs: &[EG],
-    rhs: &[EG],
-    problem: &MatmulProblem,
-) -> Vec<EG>
+pub(crate) fn matmul_cpu_reference(lhs: &[f32], rhs: &[f32], problem: &MatmulProblem) -> Vec<f32>
 where
 {
     let m = problem.m;
@@ -134,7 +23,7 @@ where
     let rhs_strides = strides(problem, MatmulIdent::Rhs);
     let out_strides = strides(problem, MatmulIdent::Out);
 
-    let mut acc = vec![EA::from_int(0); m * n * num_batches];
+    let mut acc = vec![0.; m * n * num_batches];
 
     for nth_batch in 0..num_batches {
         let batch_out = nth_batch * m * n;
@@ -153,27 +42,47 @@ where
                     let rhs_index = k_ * n + j;
                     let out_index = i * n + j;
 
-                    let l: ES = lhs[batch_lhs + lhs_index].cast_into();
-                    let r: ES = rhs[batch_rhs + rhs_index].cast_into();
+                    let l = lhs[batch_lhs + lhs_index];
+                    let r = rhs[batch_rhs + rhs_index];
                     let prod = l * r;
 
-                    acc[batch_out + out_index] += prod.cast_into();
+                    acc[batch_out + out_index] += prod;
                 }
             }
         }
     }
 
-    // Allows EG != EA
-    if core::any::TypeId::of::<EG>() == core::any::TypeId::of::<EA>() {
-        // EG == EA → return `acc` directly
-        let acc_as_eg: Vec<EG> = unsafe { std::mem::transmute(acc) };
-        acc_as_eg
-    } else {
-        // EG != EA → cast each element
-        let mut out = vec![EG::from_int(0); m * n * num_batches];
-        for i in 0..m * n * num_batches {
-            out[i] = acc[i].cast_into();
+    acc
+}
+
+/// Returns the stride of the identified tensor, inferred by the problem definition
+pub(crate) fn strides(problem: &MatmulProblem, ident: MatmulIdent) -> Vec<usize> {
+    let shape = problem.shape(ident);
+    let rank = shape.len();
+    let mut strides = Vec::with_capacity(rank);
+
+    let (last_batch, x, y) = match ident {
+        MatmulIdent::Lhs => match problem.lhs_layout {
+            MatrixLayout::RowMajor => (problem.m * problem.k, problem.k, 1),
+            MatrixLayout::ColMajor => (problem.m * problem.k, 1, problem.m),
+        },
+        MatmulIdent::Rhs => match problem.rhs_layout {
+            MatrixLayout::RowMajor => (problem.k * problem.n, problem.n, 1),
+            MatrixLayout::ColMajor => (problem.k * problem.n, 1, problem.k),
+        },
+        MatmulIdent::Out => (problem.m * problem.n, problem.n, 1),
+    };
+
+    strides.push(y);
+    strides.push(x);
+
+    if rank > 2 {
+        strides.push(last_batch);
+
+        for b in shape.iter().rev().take(rank - 3) {
+            strides.push(last_batch * b)
         }
-        out
     }
+
+    strides.into_iter().rev().collect()
 }

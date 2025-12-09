@@ -21,7 +21,7 @@ pub fn test() {
         .load_specialization_config(specialization())
         .build();
 
-    test_matmul_algorithm::<TestEG, TestES, TestEA, Algorithm>(client, problem(), matmul_selection);
+    test_matmul_algorithm::<Algorithm>(client, problem(), matmul_selection, elems());
 }
 // };
 

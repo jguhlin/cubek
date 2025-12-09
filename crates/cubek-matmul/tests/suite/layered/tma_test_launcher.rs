@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use cubecl::{TestRuntime, prelude::*};
 
 use cubek_matmul::components::AvailableLineSizes;
@@ -16,21 +14,16 @@ use cubek_matmul::{
     components::global::args::{ConcreteOutputFactory, TensorOutput},
 };
 
-use crate::suite::test_utils::CastInto;
-use crate::suite::test_utils::Sample;
-use crate::suite::test_utils::{assert_result, tensor_raw_parts};
+use crate::suite::test_utils::output_test_tensor;
+use crate::suite::test_utils::{assert_result, input_test_tensor};
 
 /// Test the correctness of the specified Matmul on the given device,
 /// against a naive CPU implementation over the given problem
-pub fn test_tma_matmul_algorithm<
-    EG: Float + CubeElement + Display + CastInto<ES> + Sample,
-    ES: Numeric + CastInto<EA> + Sample,
-    EA: Numeric + CastInto<EG> + Sample,
-    A: Algorithm,
->(
+pub fn test_tma_matmul_algorithm<A: Algorithm>(
     client: ComputeClient<TestRuntime>,
     mut problem: MatmulProblem,
     selection: MatmulSelection,
+    dtypes: MatmulElems,
 ) {
     let env = std::env::var("CUBEK_TEST_MODE");
 
@@ -42,8 +35,6 @@ pub fn test_tma_matmul_algorithm<
         },
         Err(_) => false,
     };
-
-    let dtypes = MatmulElems::from_eg_es_ea::<EG, ES, EA>();
 
     let line_sizes = AvailableLineSizes::from_type_sizes(
         &client,
@@ -73,9 +64,21 @@ pub fn test_tma_matmul_algorithm<
 
     let line_sizes = config.line_sizes();
 
-    let lhs = tensor_raw_parts::<EG>(&client, &problem, MatmulIdent::Lhs);
-    let rhs = tensor_raw_parts::<EG>(&client, &problem, MatmulIdent::Rhs);
-    let out = tensor_raw_parts::<EG>(&client, &problem, MatmulIdent::Out);
+    let (lhs, lhs_data) = input_test_tensor(
+        &client,
+        dtypes.lhs_global,
+        1234,
+        problem.lhs_layout,
+        problem.shape(MatmulIdent::Lhs),
+    );
+    let (rhs, rhs_data) = input_test_tensor(
+        &client,
+        dtypes.rhs_global,
+        5678,
+        problem.rhs_layout,
+        problem.shape(MatmulIdent::Rhs),
+    );
+    let out = output_test_tensor(&client, &problem, dtypes.acc_global);
 
     problem.lhs_strides = lhs.strides.clone();
     problem.rhs_strides = rhs.strides.clone();
@@ -154,12 +157,13 @@ pub fn test_tma_matmul_algorithm<
     }
 
     assert_result(
-        &lhs.original_data.unwrap(),
-        &rhs.original_data.unwrap(),
+        &lhs_data,
+        &rhs_data,
         &problem,
         &client,
         out.handle,
         &out.shape,
         &out.strides,
+        dtypes,
     );
 }

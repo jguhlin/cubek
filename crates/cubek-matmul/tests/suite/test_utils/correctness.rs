@@ -1,49 +1,44 @@
-use std::any::TypeId;
 use std::fmt::Display;
 
 use cubecl::TestRuntime;
-use cubecl::prelude::Numeric;
 use cubecl::{CubeElement, client::ComputeClient, prelude::Float, server};
 
-use crate::suite::test_utils::cpu_reference::{CastInto, matmul_cpu_reference};
-use cubek_matmul::components::MatmulProblem;
+use crate::suite::test_utils::cpu_reference::matmul_cpu_reference;
+use cubek_matmul::components::{MatmulElems, MatmulProblem};
 
-pub fn assert_result<
-    EG: Float + CubeElement + Display + CastInto<ES>,
-    ES: Numeric + CastInto<EA>,
-    EA: Numeric + CastInto<EG>,
->(
-    lhs: &[EG],
-    rhs: &[EG],
+pub fn assert_result(
+    lhs: &[f32],
+    rhs: &[f32],
     problem: &MatmulProblem,
     client: &ComputeClient<TestRuntime>,
     out: server::Handle,
     shape: &[usize],
     strides: &[usize],
+    dtypes: MatmulElems,
 ) {
-    let eps_global = epsilon_for_type::<EG>();
-    let eps_stage = epsilon_for_type::<ES>();
-    let eps_acc = epsilon_for_type::<EA>();
+    let epsilon = matmul_epsilon(&dtypes, 170.);
 
-    // Empirically chosen for metal
-    let safety_factor = 170.0;
-    let epsilon = (eps_global.max(eps_stage).max(eps_acc)) * safety_factor;
-
-    let expected = matmul_cpu_reference::<EG, ES, EA>(lhs, rhs, problem)
+    let expected = matmul_cpu_reference(lhs, rhs, problem)
         .into_iter()
-        .collect::<Vec<EG>>();
+        .collect::<Vec<f32>>();
 
-    if let Err(e) = assert_equals_approx::<EG>(client, out, shape, strides, &expected, epsilon) {
+    if let Err(e) = assert_equals_approx(client, out, shape, strides, &expected, epsilon) {
         panic!("{}", e);
     }
 }
 
-fn epsilon_for_type<T: 'static>() -> f32 {
-    if TypeId::of::<T>() == TypeId::of::<f32>() {
-        f32::EPSILON
-    } else {
-        half::f16::EPSILON.to_f32()
-    }
+fn matmul_epsilon(elems: &MatmulElems, safety_factor: f32) -> f32 {
+    let total_eps = elems.lhs_global.dtype.epsilon()
+        + elems.rhs_global.dtype.epsilon()
+        + elems.acc_global.dtype.epsilon()
+        + elems.lhs_stage.dtype.epsilon()
+        + elems.rhs_stage.dtype.epsilon()
+        + elems.acc_stage.dtype.epsilon()
+        + elems.lhs_register.dtype.epsilon()
+        + elems.rhs_register.dtype.epsilon()
+        + elems.acc_register.dtype.epsilon();
+
+    total_eps as f32 * safety_factor
 }
 
 /// Compares the content of a handle to a given slice of f32.

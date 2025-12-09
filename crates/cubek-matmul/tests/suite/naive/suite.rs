@@ -1,18 +1,18 @@
-use crate::suite::test_utils::{assert_result, tensor_raw_parts};
+use crate::suite::test_utils::{assert_result, input_test_tensor, output_test_tensor};
 use cubecl::Runtime;
 use cubecl::frontend::CubePrimitive;
 use cubecl::prelude::TensorHandleRef;
 use cubek_matmul::MatmulInputHandleRef;
 
-use cubek_matmul::components::{MatmulIdent, MatmulProblem, MatrixLayout};
-use cubek_matmul::{components::MatmulElems, kernels::naive};
+use cubek_matmul::components::{MatmulElems, MatmulIdent, MatmulProblem, MatrixLayout};
+use cubek_matmul::kernels::naive;
 
 type TestRuntime = cubecl::TestRuntime;
 
 struct MatmulTestCase {
     pub m: usize,
-    pub k: usize,
     pub n: usize,
+    pub k: usize,
     pub batch: usize,
 }
 
@@ -34,11 +34,23 @@ impl MatmulTestCase {
 }
 
 #[test]
+pub fn test_very_small() {
+    let case = MatmulTestCase {
+        m: 64,
+        n: 64,
+        k: 64,
+        batch: 1,
+    };
+
+    test_naive(case);
+}
+
+#[test]
 pub fn test_small() {
     let case = MatmulTestCase {
         m: 64,
-        k: 64,
         n: 64,
+        k: 64,
         batch: 1,
     };
 
@@ -49,8 +61,8 @@ pub fn test_small() {
 pub fn test_odd() {
     let case = MatmulTestCase {
         m: 1,
-        k: 101,
         n: 255,
+        k: 101,
         batch: 1,
     };
 
@@ -61,8 +73,8 @@ pub fn test_odd() {
 pub fn test_large() {
     let case = MatmulTestCase {
         m: 256,
-        k: 256,
         n: 256,
+        k: 256,
         batch: 1,
     };
 
@@ -73,8 +85,8 @@ pub fn test_large() {
 pub fn test_with_check_bounds() {
     let case = MatmulTestCase {
         m: 60,
-        k: 60,
         n: 60,
+        k: 60,
         batch: 1,
     };
 
@@ -85,8 +97,8 @@ pub fn test_with_check_bounds() {
 pub fn test_with_batches() {
     let case = MatmulTestCase {
         m: 64,
-        k: 64,
         n: 64,
+        k: 64,
         batch: 3,
     };
 
@@ -97,39 +109,40 @@ fn test_naive(case: MatmulTestCase) {
     let client = TestRuntime::client(&Default::default());
     let problem = case.to_problem();
 
-    let lhs = tensor_raw_parts::<TestEG>(&client, &problem, MatmulIdent::Lhs);
-    let rhs = tensor_raw_parts::<TestEG>(&client, &problem, MatmulIdent::Rhs);
-    let out = tensor_raw_parts::<TestEG>(&client, &problem, MatmulIdent::Out);
+    let dtype = elem();
+
+    let (lhs, lhs_data) = input_test_tensor(
+        &client,
+        dtype,
+        1234,
+        problem.lhs_layout,
+        problem.shape(MatmulIdent::Lhs),
+    );
+
+    let (rhs, rhs_data) = input_test_tensor(
+        &client,
+        dtype,
+        5678,
+        problem.rhs_layout,
+        problem.shape(MatmulIdent::Rhs),
+    );
+
+    let out = output_test_tensor(&client, &problem, dtype);
 
     let lhs_handle = MatmulInputHandleRef::Normal(
         unsafe {
-            TensorHandleRef::from_raw_parts(
-                &lhs.handle,
-                &lhs.strides,
-                &lhs.shape,
-                TestEG::type_size() as usize,
-            )
+            TensorHandleRef::from_raw_parts(&lhs.handle, &lhs.strides, &lhs.shape, dtype.size())
         },
-        TestEG::as_type_native_unchecked(),
+        dtype.dtype,
     );
     let rhs_handle = MatmulInputHandleRef::Normal(
         unsafe {
-            TensorHandleRef::from_raw_parts(
-                &rhs.handle,
-                &rhs.strides,
-                &rhs.shape,
-                TestEG::type_size() as usize,
-            )
+            TensorHandleRef::from_raw_parts(&rhs.handle, &rhs.strides, &rhs.shape, dtype.size())
         },
-        TestEG::as_type_native_unchecked(),
+        dtype.dtype,
     );
     let out_handle = unsafe {
-        TensorHandleRef::from_raw_parts(
-            &out.handle,
-            &out.strides,
-            &out.shape,
-            TestEG::type_size() as usize,
-        )
+        TensorHandleRef::from_raw_parts(&out.handle, &out.strides, &out.shape, dtype.size())
     };
 
     naive::launch_ref(
@@ -137,17 +150,18 @@ fn test_naive(case: MatmulTestCase) {
         &lhs_handle,
         &rhs_handle,
         &out_handle,
-        &MatmulElems::new::<TestEG>(),
+        &MatmulElems::from_single_dtype(dtype),
     )
     .unwrap();
 
-    assert_result::<TestEG, TestEG, TestEG>(
-        &lhs.original_data.unwrap(),
-        &rhs.original_data.unwrap(),
+    assert_result(
+        &lhs_data,
+        &rhs_data,
         &problem,
         &client,
         out.handle,
         &out.shape,
         &out.strides,
+        MatmulElems::from_single_dtype(dtype),
     );
 }
