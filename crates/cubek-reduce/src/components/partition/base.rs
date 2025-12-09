@@ -1,9 +1,10 @@
 use crate::{
-    LineMode, ReduceParams,
+    LineMode,
     components::{
         partition::{parallel::partition_parallel, perpendicular::partition_perpendicular},
         precision::ReducePrecision,
     },
+    routines::ReduceBlueprint,
 };
 use cubecl::{prelude::*, std::tensor::r#virtual::VirtualTensor};
 
@@ -24,7 +25,7 @@ impl ReducePartition {
         input: &VirtualTensor<P::EI>,
         output: &mut VirtualTensor<Out, ReadWrite>,
         axis_reduce: u32,
-        #[comptime] params: ReduceParams,
+        #[comptime] params: ReduceBlueprint,
     ) -> ReducePartition {
         match comptime!(params.line_mode) {
             LineMode::Parallel => {

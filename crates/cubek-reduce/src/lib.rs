@@ -10,16 +10,12 @@
 //! It also provides implementation of the [`ReduceInstruction`] trait for common operations in the [`instructions`] module.
 //! Finally, it provides many reusable primitives to perform different general reduction algorithms in the [`primitives`] module.
 
-pub(crate) mod view;
-
 pub mod components;
+pub mod launch;
 pub mod routines;
-pub mod tune_key;
 
 mod error;
-mod launch;
 mod shared_sum;
-mod strategy;
 
 pub use components::config::*;
 pub use components::instructions::ReduceFamily;
@@ -27,16 +23,16 @@ pub use components::instructions::ReduceInstruction;
 pub use components::precision::ReducePrecision;
 pub use error::*;
 pub use shared_sum::*;
-pub use strategy::*;
-
-use launch::*;
 
 pub use components::args::init_tensors;
-pub use launch::{ReduceDtypes, ReduceParams, reduce_kernel};
+pub use launch::{ReduceDtypes, reduce_kernel};
 
 use cubecl::prelude::*;
 
-use crate::components::instructions::ReduceOperationConfig;
+use crate::{
+    components::instructions::ReduceOperationConfig,
+    launch::{ReduceLaunchInfo, ReduceStrategy, launch_reduce},
+};
 
 /// Reduce the given `axis` of the `input` tensor using the instruction `Inst` and write the result into `output`.
 ///
@@ -105,7 +101,7 @@ pub fn reduce<R: Runtime>(
     let strategy = strategy
         .map(|s| s.validate(client))
         .unwrap_or(Ok(ReduceStrategy::new(client, true)))?;
-    let config = ReduceConfig::generate(client, &input, &output, axis, &strategy, dtypes.input);
+    let config = ReduceLaunchInfo::generate(client, &input, &output, axis, &strategy, dtypes.input);
 
     if let CubeCount::Static(x, y, z) = config.cube_count {
         let (max_x, max_y, max_z) = R::max_cube_count();

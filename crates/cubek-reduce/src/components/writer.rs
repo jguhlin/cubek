@@ -1,4 +1,4 @@
-use crate::{LineMode, ReduceInstruction, ReduceParams, ReducePrecision};
+use crate::{LineMode, ReduceInstruction, ReducePrecision, routines::ReduceBlueprint};
 use cubecl::{prelude::*, std::tensor::r#virtual::VirtualTensor};
 
 #[cube]
@@ -7,7 +7,7 @@ pub fn write<P: ReducePrecision, Out: Numeric, R: ReduceInstruction<P>>(
     accumulator: R::AccumulatorItem,
     reduce_index: u32,
     shape_axis_reduce: u32,
-    #[comptime] settings: ReduceParams,
+    #[comptime] settings: ReduceBlueprint,
     inst: &R,
 ) {
     if elected_writer(settings) {
@@ -28,7 +28,7 @@ fn write_accumulator<P: ReducePrecision, Out: Numeric, R: ReduceInstruction<P>>(
     accumulator: R::AccumulatorItem,
     reduce_index: u32,
     shape_axis_reduce: u32,
-    #[comptime] settings: ReduceParams,
+    #[comptime] settings: ReduceBlueprint,
     inst: &R,
 ) {
     match comptime!(settings.line_mode) {
@@ -62,7 +62,7 @@ fn write_accumulator<P: ReducePrecision, Out: Numeric, R: ReduceInstruction<P>>(
 }
 
 #[cube]
-fn elected_writer(#[comptime] settings: ReduceParams) -> bool {
+fn elected_writer(#[comptime] settings: ReduceBlueprint) -> bool {
     if settings.shared.is_some() {
         UNIT_POS == 0
     } else if settings.use_planes {

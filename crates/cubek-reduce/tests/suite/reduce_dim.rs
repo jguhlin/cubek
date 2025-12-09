@@ -1,7 +1,7 @@
 use cubecl::TestRuntime;
 use cubecl::prelude::*;
 use cubek_reduce::components::instructions::ReduceOperationConfig;
-use cubek_reduce::{ReduceDtypes, ReduceError, ReducePrecision, ReduceStrategy, reduce};
+use cubek_reduce::{ReduceDtypes, ReduceError, ReducePrecision, reduce, launch::ReduceStrategy};
 use rand::{
     SeedableRng,
     distr::{Distribution, Uniform},

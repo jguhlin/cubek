@@ -1,6 +1,6 @@
 use crate::{
-    ReduceParams,
     components::{partition::ReducePartition, precision::ReducePrecision},
+    routines::ReduceBlueprint,
 };
 use cubecl::{prelude::*, std::tensor::r#virtual::VirtualTensor};
 
@@ -10,7 +10,7 @@ pub fn partition_parallel<P: ReducePrecision, Out: Numeric>(
     input: &VirtualTensor<P::EI>,
     output: &mut VirtualTensor<Out, ReadWrite>,
     axis_reduce: u32,
-    #[comptime] params: ReduceParams,
+    #[comptime] params: ReduceBlueprint,
 ) -> ReducePartition {
     let shape_axis = input.shape(axis_reduce);
 

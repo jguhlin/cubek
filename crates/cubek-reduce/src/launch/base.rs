@@ -1,11 +1,10 @@
 use crate::{
-    LineMode, ReduceConfig, ReduceStrategy,
     components::{
         args::{ReduceArgs, TensorArgs, init_tensors},
-        config::BoundChecksInner,
         instructions::*,
     },
-    routines::reduce_kernel_virtual,
+    launch::{ReduceLaunchInfo, ReduceStrategy},
+    routines::{ReduceBlueprint, reduce_kernel_virtual},
 };
 use cubecl::prelude::*;
 
@@ -25,12 +24,12 @@ pub(crate) fn launch_reduce<Run: Runtime>(
     input: TensorHandleRef<Run>,
     output: TensorHandleRef<Run>,
     axis: u32,
-    config: ReduceConfig,
+    config: ReduceLaunchInfo,
     strategy: ReduceStrategy,
     dtypes: ReduceDtypes,
     inst: ReduceOperationConfig,
 ) -> Result<(), LaunchError> {
-    let settings = ReduceParams {
+    let settings = ReduceBlueprint {
         shared: strategy.shared.then(|| {
             if strategy.use_planes {
                 config.cube_dim.y
@@ -62,23 +61,12 @@ pub(crate) fn launch_reduce<Run: Runtime>(
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ReduceParams {
-    pub shared: Option<u32>, // shared if Some(x) where x is the accumulator size.
-    pub use_planes: bool,
-    pub line_size_input: u32,
-    pub line_size_output: u32,
-    pub line_mode: LineMode,
-    pub bound_checks: bool,
-    pub bound_checks_inner: BoundChecksInner,
-}
-
 #[cube(launch_unchecked)]
 pub fn reduce_kernel<In: Numeric, Out: Numeric, Acc: Numeric, RA: ReduceArgs>(
     input: &RA::Input<In>,
     output: &mut RA::Output<Out>,
     axis_reduce: u32,
-    #[comptime] params: ReduceParams,
+    #[comptime] params: ReduceBlueprint,
     #[comptime] config: ReduceOperationConfig,
     #[define(In)] _input_dtype: StorageType,
     #[define(Out)] _output_dtype: StorageType,

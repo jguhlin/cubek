@@ -1,5 +1,5 @@
 use crate::{
-    LineMode, ReduceParams,
+    LineMode,
     components::{
         instructions::*,
         level::{self},
@@ -7,6 +7,7 @@ use crate::{
         precision::ReducePrecision,
         writer,
     },
+    routines::ReduceBlueprint,
 };
 use cubecl::{prelude::*, std::tensor::r#virtual::VirtualTensor};
 
@@ -15,7 +16,7 @@ pub fn reduce_kernel_virtual<In: Numeric, Out: Numeric, Acc: Numeric>(
     input: &VirtualTensor<In>,
     output: &mut VirtualTensor<Out, ReadWrite>,
     axis_reduce: u32,
-    #[comptime] params: ReduceParams,
+    #[comptime] params: ReduceBlueprint,
     #[comptime] config: ReduceOperationConfig,
 ) {
     let reduce_index = get_reduce_index(params);
@@ -43,7 +44,7 @@ fn reduce_kernel_inner<P: ReducePrecision, Out: Numeric, R: ReduceFamily>(
     output: &mut VirtualTensor<Out, ReadWrite>,
     axis_reduce: u32,
     reduce_index: u32,
-    #[comptime] params: ReduceParams,
+    #[comptime] params: ReduceBlueprint,
     #[comptime] config: R::Config,
 ) {
     let partition =
@@ -91,7 +92,7 @@ fn reduce_kernel_inner<P: ReducePrecision, Out: Numeric, R: ReduceFamily>(
 }
 
 #[cube]
-fn get_reduce_index(#[comptime] params: ReduceParams) -> u32 {
+fn get_reduce_index(#[comptime] params: ReduceBlueprint) -> u32 {
     if params.shared.is_some() {
         CUBE_POS
     } else if params.use_planes {
@@ -102,7 +103,7 @@ fn get_reduce_index(#[comptime] params: ReduceParams) -> u32 {
 }
 
 #[cube]
-fn get_reduce_count(output_size: u32, #[comptime] params: ReduceParams) -> u32 {
+fn get_reduce_count(output_size: u32, #[comptime] params: ReduceBlueprint) -> u32 {
     match comptime!(params.line_mode) {
         LineMode::Parallel => output_size,
         LineMode::Perpendicular => output_size / params.line_size_input,
