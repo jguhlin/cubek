@@ -3,16 +3,15 @@ use cubecl::server::Allocation;
 use cubecl::std::CubeOptionArgs;
 use cubecl::{CubeElement, server};
 
-use crate::components::AttentionIdent;
-use crate::components::args::{TensorArgs, TensorInputsLaunch};
-use crate::components::batch::BatchAttentionFamily;
-use crate::components::{AttentionBlueprint, AttentionProblem};
-use crate::kernels::Algorithm;
-use crate::tests::test_utils::Sampleable;
-use crate::tests::test_utils::TestPrecision;
-
 use cubecl::{Runtime, client::ComputeClient};
+use cubek_attention::components::args::{TensorArgs, TensorInputsLaunch};
+use cubek_attention::components::batch::BatchAttentionFamily;
+use cubek_attention::components::{AttentionBlueprint, AttentionIdent, AttentionProblem};
+use cubek_attention::kernels::Algorithm;
 use std::fmt::Debug;
+
+use crate::suite::TestPrecision;
+use crate::suite::test_utils::Sampleable;
 
 // Returns if should return
 fn should_abort<T, E: Debug>(result: &Result<T, E>) -> bool {
