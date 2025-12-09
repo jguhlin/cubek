@@ -1,5 +1,6 @@
 use cubecl::{
     TestRuntime,
+    ir::{ElemType, FloatKind},
     prelude::*,
     std::tensor::{
         TensorHandle, ViewOperations, ViewOperationsExpand, ViewOperationsMut,
@@ -29,8 +30,12 @@ pub fn new_casted(
     client: &ComputeClient<TestRuntime>,
     original: &TensorHandle<TestRuntime>,
 ) -> TensorHandle<TestRuntime> {
-    let num_elems = original.shape.iter().product();
+    if original.dtype == StorageType::Scalar(ElemType::Float(FloatKind::F32)) {
+        return original.clone();
+    }
+
     let out_dtype = f32::as_type_native_unchecked();
+    let num_elems: usize = original.shape.iter().product();
 
     let line_size = tensor_line_size_parallel(
         TestRuntime::supported_line_sizes().iter().copied(),
@@ -39,9 +44,9 @@ pub fn new_casted(
         0,
     );
 
-    let num_units = num_elems / line_size as usize;
+    let num_units_needed: u32 = num_elems as u32 / line_size as u32;
     let cube_dim = CubeDim::default();
-    let cube_count = num_units as u32 / cube_dim.num_elems();
+    let cube_count = num_units_needed.div_ceil(cube_dim.num_elems());
 
     let out = TensorHandle::new_contiguous(
         original.shape.clone(),
@@ -54,15 +59,7 @@ pub fn new_casted(
         CubeCount::Static(cube_count, 1, 1),
         cube_dim,
         original.as_arg(line_size),
-        unsafe {
-            TensorArg::from_raw_parts_and_size(
-                &out.handle,
-                &original.strides,
-                &original.shape,
-                line_size,
-                out_dtype.size(),
-            )
-        },
+        out.as_arg(line_size),
         [original.dtype, out_dtype],
     )
     .unwrap();
