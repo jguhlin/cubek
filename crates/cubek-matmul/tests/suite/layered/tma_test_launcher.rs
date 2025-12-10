@@ -38,34 +38,6 @@ pub fn test_tma_matmul_algorithm<A: Algorithm>(
         Err(_) => false,
     };
 
-    let line_sizes = AvailableLineSizes::from_type_sizes(
-        &client,
-        dtypes.lhs_global.size(),
-        dtypes.rhs_global.size(),
-        dtypes.acc_global.size(),
-    );
-    let line_sizes = A::filter_line_sizes(line_sizes);
-    let line_sizes = line_sizes
-        .filter_lhs(|ls| *ls == 1)
-        .filter_rhs(|ls| *ls == 1)
-        .pick_max()
-        .unwrap();
-    // let dtypes = MatmulElems::new_with_tile::<P::MP, A::TileMatmul>();
-    let config = match A::setup(&client, &problem, &selection, &line_sizes, &dtypes) {
-        Ok(config) => config,
-        Err(err) => {
-            let msg = format!("Can't launch the test: {err}");
-            if panic_on_launch_err {
-                panic!("{msg}");
-            } else {
-                println!("{msg}");
-                return;
-            }
-        }
-    };
-
-    let line_sizes = config.line_sizes();
-
     let (lhs, lhs_data) = input_test_tensor(
         &client,
         dtypes.lhs_global,
@@ -81,6 +53,40 @@ pub fn test_tma_matmul_algorithm<A: Algorithm>(
         problem.shape(MatmulIdent::Rhs),
     );
     let out = output_test_tensor(&client, &problem, dtypes.acc_global);
+
+    let line_sizes = AvailableLineSizes::from_type_sizes(
+        &client,
+        dtypes.lhs_global.size(),
+        dtypes.rhs_global.size(),
+        dtypes.acc_global.size(),
+    );
+    let line_sizes = A::filter_line_sizes(line_sizes);
+    let line_sizes = line_sizes
+        .filter_lhs(|ls| *ls == 1)
+        .filter_rhs(|ls| *ls == 1)
+        .pick_max()
+        .unwrap();
+
+    let config = match A::setup(&client, &problem, &selection, &line_sizes, &dtypes) {
+        Ok(config) => config,
+        Err(err) => {
+            let msg = format!("Can't launch the test: {err}");
+            if panic_on_launch_err {
+                panic!("{msg}");
+            } else {
+                println!("{msg}");
+                return;
+            }
+        }
+    };
+
+    let props = &client.properties().hardware;
+    if !props.max_cube_dim.can_contain(config.cube_dim())
+        || config.cube_dim().num_elems() > props.max_units_per_cube
+    {
+        println!("Skipping test, too many resources requested");
+        return;
+    }
 
     problem.lhs_strides = lhs.strides.clone();
     problem.rhs_strides = rhs.strides.clone();
@@ -154,7 +160,7 @@ pub fn test_tma_matmul_algorithm<A: Algorithm>(
     };
 
     match result {
-        Ok(()) => {}
+        Ok(_) => {}
         Err(_err) => return,
     }
 

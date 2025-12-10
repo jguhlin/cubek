@@ -47,7 +47,6 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         problem.lhs_layout,
         problem.shape(MatmulIdent::Lhs),
     );
-
     let (rhs, rhs_data) = input_test_tensor(
         &client,
         dtypes.rhs_global,
@@ -56,9 +55,6 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         problem.shape(MatmulIdent::Rhs),
     );
     let out = output_test_tensor(&client, &problem, dtypes.acc_global);
-
-    problem.lhs_strides = lhs.strides.clone();
-    problem.rhs_strides = rhs.strides.clone();
 
     let line_sizes = AvailableLineSizes::from_type_sizes(
         &client,
@@ -95,10 +91,8 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         return;
     }
 
-    let cube_count_plan = config.hypercube_config().cube_count_plan(
-        &problem,
-        client.properties().hardware.max_cube_count.clone(),
-    );
+    problem.lhs_strides = lhs.strides.clone();
+    problem.rhs_strides = rhs.strides.clone();
 
     let lhs_handle = MatmulInputHandleRef::Normal(
         unsafe {
@@ -131,30 +125,37 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         )
     };
 
+    let inputs = TensorInputs::create(
+        &client,
+        &lhs_handle,
+        &rhs_handle,
+        &selection,
+        &problem,
+        &line_sizes,
+        config,
+        &dtypes,
+    );
+    let output = TensorOutput::create(
+        &client,
+        &out_handle,
+        &selection,
+        &problem,
+        &line_sizes,
+        config,
+        &dtypes,
+    );
+    let cube_count_plan = config.hypercube_config().cube_count_plan(
+        &problem,
+        client.properties().hardware.max_cube_count.clone(),
+    );
+
     let result = unsafe {
         A::BatchMatmul::launch_unchecked::<TensorArgs, TestRuntime>(
             &client,
             config.cube_dim(),
             cube_count_plan.resolve(),
-            TensorInputs::create(
-                &client,
-                &lhs_handle,
-                &rhs_handle,
-                &selection,
-                &problem,
-                &line_sizes,
-                config,
-                &dtypes,
-            ),
-            TensorOutput::create(
-                &client,
-                &out_handle,
-                &selection,
-                &problem,
-                &line_sizes,
-                config,
-                &dtypes,
-            ),
+            inputs,
+            output,
             cube_count_plan.as_args(),
             config,
             &dtypes,
