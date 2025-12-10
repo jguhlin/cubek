@@ -1,5 +1,7 @@
 use cubecl::TestRuntime;
 use cubecl::prelude::*;
+use cubek_matmul::components::global::args::TensorMapArgs;
+use cubek_matmul::components::global::args::TensorMapInputs;
 
 use crate::suite::test_utils::output_test_tensor;
 use crate::suite::test_utils::{assert_result, input_test_tensor};
@@ -19,6 +21,11 @@ use cubek_matmul::{
     components::{AvailableLineSizes, MatmulIdent},
 };
 
+pub enum InputRepresentation {
+    Normal,
+    Tma,
+}
+
 // TODO should be always used, remove feature flags
 #[allow(unused)]
 /// Test the correctness of the specified Matmul on the given device,
@@ -28,6 +35,7 @@ pub fn test_matmul_algorithm<A: Algorithm>(
     mut problem: MatmulProblem,
     selection: MatmulSelection,
     dtypes: MatmulElems,
+    input_representation: InputRepresentation,
 ) {
     let env = std::env::var("CUBEK_TEST_MODE");
 
@@ -63,12 +71,19 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         dtypes.acc_global.size(),
     );
     let line_sizes = A::filter_line_sizes(line_sizes);
-    let line_sizes = line_sizes
-        .filter_lhs_with_tensor(&lhs.strides, &lhs.shape, problem.lhs_layout)
-        .filter_rhs_with_tensor(&rhs.strides, &rhs.shape, problem.rhs_layout)
-        .filter_out_with_tensor(&out.strides, &out.shape)
-        .pick_max()
-        .unwrap();
+    let line_sizes = match input_representation {
+        InputRepresentation::Normal => line_sizes
+            .filter_lhs_with_tensor(&lhs.strides, &lhs.shape, problem.lhs_layout)
+            .filter_rhs_with_tensor(&rhs.strides, &rhs.shape, problem.rhs_layout)
+            .filter_out_with_tensor(&out.strides, &out.shape)
+            .pick_max()
+            .unwrap(),
+        InputRepresentation::Tma => line_sizes
+            .filter_lhs(|ls| *ls == 1)
+            .filter_rhs(|ls| *ls == 1)
+            .pick_max()
+            .unwrap(),
+    };
 
     let config = match A::setup(&client, &problem, &selection, &line_sizes, &dtypes) {
         Ok(config) => config,
@@ -125,16 +140,6 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         )
     };
 
-    let inputs = TensorInputs::create(
-        &client,
-        &lhs_handle,
-        &rhs_handle,
-        &selection,
-        &problem,
-        &line_sizes,
-        config,
-        &dtypes,
-    );
     let output = TensorOutput::create(
         &client,
         &out_handle,
@@ -149,23 +154,60 @@ pub fn test_matmul_algorithm<A: Algorithm>(
         client.properties().hardware.max_cube_count.clone(),
     );
 
-    let result = unsafe {
-        A::BatchMatmul::launch_unchecked::<TensorArgs, TestRuntime>(
-            &client,
-            config.cube_dim(),
-            cube_count_plan.resolve(),
-            inputs,
-            output,
-            cube_count_plan.as_args(),
-            config,
-            &dtypes,
-        )
+    let result = match input_representation {
+        InputRepresentation::Normal => {
+            let inputs = TensorInputs::create(
+                &client,
+                &lhs_handle,
+                &rhs_handle,
+                &selection,
+                &problem,
+                &line_sizes,
+                config,
+                &dtypes,
+            );
+
+            unsafe {
+                A::BatchMatmul::launch_unchecked::<TensorArgs, TestRuntime>(
+                    &client,
+                    config.cube_dim(),
+                    cube_count_plan.resolve(),
+                    inputs,
+                    output,
+                    cube_count_plan.as_args(),
+                    config,
+                    &dtypes,
+                )
+            }
+        }
+        InputRepresentation::Tma => {
+            let inputs = TensorMapInputs::create(
+                &client,
+                &lhs_handle,
+                &rhs_handle,
+                &selection,
+                &problem,
+                &line_sizes,
+                config,
+                &dtypes,
+            );
+
+            unsafe {
+                A::BatchMatmul::launch_unchecked::<TensorMapArgs, TestRuntime>(
+                    &client,
+                    config.cube_dim(),
+                    cube_count_plan.resolve(),
+                    inputs,
+                    output,
+                    cube_count_plan.as_args(),
+                    config,
+                    &dtypes,
+                )
+            }
+        }
     };
 
-    match result {
-        Ok(_) => {}
-        Err(_err) => return,
+    if let Ok(_) = result {
+        assert_result(&lhs_data, &rhs_data, &problem, &client, &out, dtypes);
     }
-
-    assert_result(&lhs_data, &rhs_data, &problem, &client, &out, dtypes);
 }
