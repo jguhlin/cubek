@@ -90,6 +90,7 @@ pub fn test_matmul_algorithm<A: Routine<Blueprint = TilingBlueprint>>(
 }
 
 /// Returns whether execution succeeded
+#[allow(clippy::too_many_arguments)]
 pub fn launch_matmul_algorithm<A: Routine<Blueprint = TilingBlueprint>>(
     client: &ComputeClient<TestRuntime>,
     problem: &MatmulProblem,
